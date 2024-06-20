@@ -1,0 +1,41 @@
+@import './global.css';
+
+body {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    min-height: 100vh;
+    place-items: center;
+}
+
+#chooseStorage {
+    display: grid;
+    place-items: center;
+    place-content: center;
+    height: 25rem;
+    width: 20rem;
+    gap: 3rem;
+    background-color: var(--color-light-grey);
+    border-radius: 2rem;
+    font-size: 1.5rem;
+}
+
+button {
+    height: 3rem;
+    width: 13rem;
+    color: white;
+    font-size: var(--font-size-popup);
+    border: none;
+    border-radius: 0.8rem;
+    background-color: var(--color-blue);
+    transition: background-color 0.3s, font-size 0.3s;
+}
+
+button:hover {
+    cursor: pointer;
+    font-size: calc(0.95*var(--font-size-popup));
+    background-color: var(--color-light-blue);
+}
+
+.cancel {
+    height: 1.8rem;
+}

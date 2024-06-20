@@ -1,0 +1,263 @@
+@import './global.css';
+
+@font-face {
+    font-family: 'gagliostro';
+    src: url('./assets/fonts/gagliostro/Cagliostro-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Gwendolyn-Bold';
+    src: url('./assets/fonts/Gwendolyn/Gwendolyn-Bold.ttf') format('truetype');
+}
+
+:root {
+    --color-hover: rgb(228, 228, 228);
+}
+
+body {
+    position: relative;
+    display: flex;
+    min-height: 100vh;
+    font-family: gagliostro;
+}
+
+.sidebar {
+    display: grid;
+    grid-template-rows: repeat(4, auto) 1fr;
+    width: 20rem;
+    padding: 0 0.5rem;
+    gap: 1rem;
+    background-color: rgb(242, 237, 226);
+}
+
+.logo {
+    display: flex;
+    gap: 0.2rem;
+    align-items: center;
+}
+
+.logo>p {
+    font: 2.5rem Gwendolyn-Bold;
+}
+
+.logo>.imageContainer {
+    width: 4rem;
+    padding-top: 0.5rem;
+}
+
+.imageContainer>img {
+    height: 100%;
+    object-fit: contain;
+}
+
+.sidebar>.tasks>.addTask>.imageContainer,
+.tasks>div>.imageContainer,
+.templates>div>.imageContainer {
+    width: 2rem;
+}
+
+.sidebar>.tasks>.addTask>.imageContainer>img,
+.tasks>div.chosen>.imageContainer>img {
+    filter: brightness(0) saturate(100%) invert(26%) sepia(100%) saturate(700%) hue-rotate(-9deg) brightness(95%) contrast(93%);
+}
+
+.tasks,
+.projects,
+.templates {
+    display: grid;
+    padding: var(--list-padding-top) 0.5rem;
+}
+
+.tasks>*,
+.projects>*,
+.templates>* {
+    display: flex;
+    align-items: center;
+    height: 3.5rem;
+    padding: 0.5rem 0 0.5rem 1rem;
+    gap: 1.2rem;
+    border-radius: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.sidebar>.tasks>.addTask:hover,
+.tasks>div:hover,
+.templates>div:hover {
+    background-color: var(--color-hover);
+    cursor: pointer;
+}
+
+.tasks>div.chosen {
+    background-color: rgb(244, 221, 204);
+}
+
+.sidebarTitle {
+    justify-content: space-between;
+}
+
+.iconButtonContainer {
+    width: 2rem;
+    padding-top: 0.5rem;
+}
+
+.iconButtonContainer:hover,
+.user:hover {
+    cursor: pointer;
+}
+
+.container {
+    flex: 1;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    padding: 0.3rem;
+}
+
+nav {
+    width: 100%;
+    display: flex;
+    justify-content: end;
+}
+
+nav>div {
+    position: relative;
+}
+
+.user {
+    display: flex;
+    align-items: center;
+}
+
+.userProfileContainer {
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+}
+
+.userProfileContainer img {
+    width: 100%;
+    height: auto;
+}
+
+.username {
+    padding: 1rem;
+}
+
+.dropdownMenu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    width: 100%;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.dropdownMenu a {
+    color: black;
+    padding: 12px 16px;
+    font-size: 1rem;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdownMenu a:hover {
+    background-color: var(--color-hover);
+}
+
+.contentContainer>div {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 5rem;
+}
+
+.contentContainer>div>.titleBar {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+}
+
+.contentContainer>div>.task {
+    position: relative;
+    min-width: 30rem;
+    padding: 0.5rem 0;
+    border-radius: 0.5rem;
+    background: linear-gradient(to top, rgb(208, 208, 208) 3px, white 3px);
+}
+
+.contentContainer>div>.contentEditable {
+    border: 2px solid grey;
+}
+
+.contentContainer>div>.task:last-child {
+    background: none;
+}
+
+.task>.iconButtonContainer {
+    position: absolute;
+    top: 0rem;
+    right: 6.5rem;
+    display: flex;
+    gap: 1rem;
+}
+
+.task>.iconButtonContainer.blank {
+    visibility: hidden;
+}
+
+.task>.iconButtonContainer>img {
+    width: 1.2rem;
+}
+
+.task>.iconButtonContainer>img:hover {
+    cursor: pointer;
+}
+
+.important>.iconButtonContainer>.likeButton {
+    filter: invert(54%) sepia(91%) saturate(748%) hue-rotate(1deg) brightness(105%) contrast(101%);
+}
+
+.checked>.iconButtonContainer>.checkButton {
+    filter: brightness(0) saturate(100%) invert(35%) sepia(78%) saturate(3350%) hue-rotate(90deg) brightness(92%) contrast(94%);
+}
+
+.task>.title {
+    width: 70%;
+    font-size: 1.2rem;
+    font-weight: bolder;
+}
+
+.task>p {
+    padding: 0.2rem 1rem;
+}
+
+.task span.tag {
+    display: inline-block;
+    width: 6rem;
+}
+
+.task span.content {
+    display: inline-block;
+    min-width: 80%;
+}
+
+.task>.buttonContainer{
+    display: flex;
+    justify-content:center ;
+}
+
+.task>.buttonContainer.hidden{
+    display: none;
+}
+
+.task>.buttonContainer>button {
+    margin: 0.5rem;
+    padding: 0.2rem 1rem;
+}

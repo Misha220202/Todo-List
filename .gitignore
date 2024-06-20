@@ -1,0 +1,65 @@
+# Node.js dependencies
+/node_modules/
+
+# Build output
+# /dist/
+build/
+
+# Temporary files
+/tmp/
+temp/
+
+# Logs
+/logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor files
+.vscode/
+.idea/
+
+# Webpack specific files
+/stats.json
+/coverage/
+
+# Ignore any files in the root or in src that are related to PHP (for example, you might not want to include these if they are sensitive or not needed)
+/src/**/*.php
+/public/**/*.php
+
+# Ignore compiled CSS and source maps
+# *.css
+*.css.map
+
+# Ignore any specific runtime files
+*.pid
+
+# Ignore lock files
+package-lock.json
+yarn.lock
+
+# Ignore eslint cache
+.eslintcache
+
+# Ignore type definitions (if you're using TypeScript)
+/types/
+
+# Ignore Jest cache
+/jest/
+
+# Ignore other config or state files specific to your local development
+/.nuxt
+/out
+/.next

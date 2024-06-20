@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>log-in</title>
+</head>
+
+<body>
+    <div class="container">
+        <form action="#" method="post">
+            <fieldset>
+                <legend>Log in:</legend>
+                <div>
+                    <label for="username"><span>*</span>Username:</label>
+                    <input type="text" id="username" name="username" pattern="[^ ]{6,12}">
+                </div>
+                <div>
+                    <label for="password"><span>*</span>Password:</label>
+                    <input type="password" id="password" name="password" pattern=".{6,20}">
+                </div>
+            </fieldset>
+            <div>
+                <button class="submit" type="submit">Log in</button>
+            </div>
+            <div class="iconContainer">
+                <img class="iconButton cancel" src="./assets/images/x-square.svg" alt="cancel">
+            </div>
+        </form>
+        <p class="switch">Don't have an username? <a href="./signup.html">Sign up</a></p>
+    </div>
+    <footer>Copyright@2024 MISHA</footer>
+</body>
+
+</html>

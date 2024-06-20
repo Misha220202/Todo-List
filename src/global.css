@@ -1,0 +1,53 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --border-test: 2px solid red;
+    --color-light-grey: rgb(240, 240, 240);
+    --color-blue: rgb(114, 114, 255);
+    --color-light-blue: rgb(141, 141, 255);
+    --font-size-popup: 1.6rem;
+    --font-size-form: 1.4rem;
+    --margin-footer: 0.5rem;
+}
+
+ul,
+ol {
+    list-style: none;
+}
+
+input:invalid,
+.invalid {
+    border: var(--border-test);
+    border-radius: 3px;
+}
+
+.imageContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.iconContainer {
+    position: absolute;
+    top: 5%;
+    right: 5%;
+}
+
+.iconContainer:hover {
+    cursor: pointer;
+}
+
+footer {
+    position: absolute;
+    bottom: 0.2rem;
+    text-align: center;
+    width: 100%;
+    font: normal 1rem sans-serif;
+}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign-up</title>
+<script defer src="signup.bundle.js"></script></head>
+
+<body>
+    <div class="container">
+        <form action="#" method="post">
+            <fieldset>
+                <legend>Sign up:</legend>
+                <div>
+                    <label for="username"><span>*</span>Username:</label>
+                    <div>
+                        <input type="text" id="username" name="username" maxlength="20">
+                        <p class="hint username"></p>
+                    </div>
+                </div>
+                <div>
+                    <label for="password"><span>*</span>Password:</label>
+                    <div>
+                        <input type="password" id="password" name="password">
+                        <p class="hint password"></p>
+                    </div>
+                </div>
+                <div>
+                    <label for="confirm_password"><span>*</span>Confirm Password:</label>
+                    <input type="password" id="confirm_password" name="confirm_password" maxlength="20">
+                </div>
+            </fieldset>
+            <div>
+                <button type="submit">Sign up</button>
+            </div>
+            <div class="iconContainer">
+                <img class="iconButton cancel" src="assets/images/x-squareb8dd0ce607bca97aa45c.svg" alt="cancel">
+            </div>
+        </form>
+        <p class="switch">Already have an username? <a href="./login.html">Log in</a></p>
+    </div>
+    <footer>Copyright@2024 MISHA</footer>
+</body>
+
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App</title>
+<script defer src="app.bundle.js"></script></head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <div class="imageContainer"><img src="assets/images/logo3615da444b5b382d4332.svg" alt="logo"></div>
+            <p>ToDo-List</p>
+        </div>
+        <div class="tasks">
+            <div class="addTask">
+                <div class="imageContainer">
+                    <img src="assets/images/add73dcc6afc8d019c1a258.svg" alt="addTask">
+                </div>
+                <p>Add task</p>
+            </div>
+            <div id="today" class="chosen">
+                <div class="imageContainer">
+                    <img src="assets/images/calendar-today7113938cd5a2421ea149.svg" alt="today">
+                </div>
+                <p>Today</p>
+            </div>
+            <div id="nextSevenDays">
+                <div class="imageContainer">
+                    <img src="assets/images/calendar-76f467cdc62f1120fe2b0.svg" alt="nextSevenDays">
+                </div>
+                <p>Next 7 Days</p>
+            </div>
+            <div id="allTasks">
+                <div class="imageContainer">
+                    <img src="assets/images/all-tasks384b718a9d3fb683a50e.svg" alt="allTasks">
+                </div>
+                <p>All Tasks</p>
+            </div>
+            <div id="important">
+                <div class="imageContainer">
+                    <img src="assets/images/important440ea4b52f501404bfc6.svg" alt="important">
+                </div>
+                <p>Important</p>
+            </div>
+            <div id="overdue">
+                <div class="imageContainer">
+                    <img src="assets/images/overdue0b3c27195e2318324fbc.svg" alt="overdue">
+                </div>
+                <p>Overdue</p>
+            </div>
+        </div>
+        <div class="projects">
+            <div class="sidebarTitle">
+                <h3>My Projects</h3>
+                <div class="iconButtonContainer">
+                    <img src="assets/images/plus887d2aad484110b1f963.svg" alt="plus">
+                </div>
+            </div>
+        </div>
+        <div class="templates">
+            <div class="sidebarTitle">
+                <h3>Quick Start Templates</h3>
+            </div>
+            <div id="weeklyReview">
+                <div class="imageContainer">
+                    <img src="assets/images/template-tag62bf3ae76fdc71f1d7e5.svg" alt="template-tag">
+                </div>
+                <p>Weekly Review</p>
+            </div>
+            <div id="groceryList">
+                <div class="imageContainer">
+                    <img src="assets/images/template-tag62bf3ae76fdc71f1d7e5.svg" alt="template-tag">
+                </div>
+                <p>Grocery List</p>
+            </div>
+            <div id="readingList">
+                <div class="imageContainer">
+                    <img src="assets/images/template-tag62bf3ae76fdc71f1d7e5.svg" alt="template-tag">
+                </div>
+                <p>Reading List</p>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <nav>
+            <div>
+                <div class="user">
+                    <div class="userProfileContainer">
+                        <img src="assets/images/user780a52a3688dd2fd0230.svg" alt="userProfile">
+                    </div>
+                    <p class="username">Username</p>
+                </div>
+                <div class="dropdownMenu">
+                    <a href="#settings">Settings</a>
+                    <a href="#logout">Logout</a>
+                </div>
+            </div>
+        </nav>
+        <div class="contentContainer today">
+        </div>
+    </div>
+    <footer>Copyright@2024 MISHA</footer>
+</body>
+
+</html>
