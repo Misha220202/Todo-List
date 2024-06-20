@@ -13,14 +13,15 @@ const user = userJson ? new User(...Object.values(JSON.parse(userJson))) : null;
 const userNode = document.querySelector('.user');
 
 const initiateUser = (()=>{
-    const defaultUserProfileUrl = require('./assets/images/user.svg');
-    const defaultUser = new User('Username',defaultUserProfileUrl);
-    console.log(defaultUserProfileUrl);
-    const usernameNode = userNode.querySelector('p.username');
-    const userProfileNode = userNode.querySelector('div.userProfileContainer>img');
-
-    usernameNode.textContent = defaultUser.username;
-    userProfileNode.src = defaultUser.profileUrl;
+    if (!userJson) {
+        const defaultUserProfileUrl = require('./assets/images/user.svg');
+        const defaultUser = new User('Username',defaultUserProfileUrl);
+        console.log(defaultUserProfileUrl);
+        const usernameNode = userNode.querySelector('p.username');
+        const userProfileNode = userNode.querySelector('div.userProfileContainer>img');
+        usernameNode.textContent = defaultUser.username;
+        userProfileNode.src = defaultUser.profileUrl;
+    }
 })();
 
 
