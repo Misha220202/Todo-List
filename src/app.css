@@ -288,15 +288,25 @@ dialog {
 
 form {
     display: grid;
+    grid-template-columns: 1fr;
     place-content: center;
-    height: 20rem;
-    width: 30rem;
+    padding: 0 2rem;
     gap: 1rem;
+    width: 25rem;
+}
+
+.addTaskDialog>form {
+    height: 20rem;
+}
+
+.setProfileDialog>form {
+    height: 15rem;
 }
 
 fieldset {
     border: none;
     display: grid;
+    grid-template-columns: 1fr;
     place-content: center;
     gap: 1rem;
 }
@@ -304,7 +314,6 @@ fieldset {
 fieldset>* {
     display: flex;
     justify-content: center;
-    width: 25rem;
 }
 
 fieldset>p {
@@ -323,7 +332,7 @@ form>div {
     place-self: center;
 }
 
-form .submit {
+form button {
     width: 8rem;
     height: 2.5rem;
     border: none;
@@ -333,7 +342,7 @@ form .submit {
     background-color: var(--color-blue);
 }
 
-form .submit:hover {
+form button:hover {
     cursor: pointer;
 }
 

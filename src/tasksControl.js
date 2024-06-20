@@ -12,11 +12,11 @@ class Task {
     }
 }
 
-const tasksArrJason = localStorage.getItem('tasksArr');
-const tasksArr = tasksArrJason ? JSON.parse(tasksArrJason).map(taskObj => new Task(taskObj.title, taskObj.description, taskObj.dueDate, taskObj.checkStatus, taskObj.importance)) : [];
+const tasksArrJson = localStorage.getItem('tasksArr');
+const tasksArr = tasksArrJson ? JSON.parse(tasksArrJson).map(taskObj => new Task(taskObj.title, taskObj.description, taskObj.dueDate, taskObj.checkStatus, taskObj.importance)) : [];
 
 export const initiateTaskArr = (() => {
-    if (!tasksArrJason) {
+    if (!tasksArrJson) {
         const currentDateFormatted = format(new Date(), 'yyyy-MM-dd');
         const initialTask1 = new Task('Welcome to the "todo-List"', 'Organize your work and life, finally.', currentDateFormatted, 'notChecked', 'notImportant');
         const initialTask2 = new Task('Create your first task', 'Clicking "add task" to start.', currentDateFormatted, 'notChecked', 'important');
@@ -268,6 +268,7 @@ export const tasksControl = () => {
 
         const addTask = () => {
             const dialog = document.createElement('dialog');
+            dialog.classList.add('addTaskDialog');
             const cancelUrl = require('./assets/images/x-square.svg');
             dialog.innerHTML = `
             <form action="#" method="dialog">
@@ -290,7 +291,7 @@ export const tasksControl = () => {
                     </p>
                 </fieldset>
                 <div>
-                    <button class="submit" type="submit">Submit</button>
+                    <button type="submit">Submit</button>
                 </div>
                 <div class="iconContainer">
                     <img class="iconButton cancel" src="${cancelUrl}" alt="cancel">
@@ -315,7 +316,7 @@ export const tasksControl = () => {
                 })
             })
 
-            const submit = dialog.querySelector('.submit');
+            const submit = dialog.querySelector('button');
             submit.addEventListener('click', event => {
                 let allValid = true;
                 inputs.forEach(input => {
