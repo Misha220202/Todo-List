@@ -1,7 +1,6 @@
 import { format, addDays } from 'date-fns';
 import { classFindParentContainer, idFindParentContainer } from './findParentContainer.js';
 
-// localStorage.clear();
 class Task {
     constructor(title, description, dueDate, checkStatus, importance) {
         this.title = title;
@@ -16,14 +15,17 @@ class Task {
 const tasksArrJason = localStorage.getItem('tasksArr');
 const tasksArr = tasksArrJason ? JSON.parse(tasksArrJason).map(taskObj => new Task(taskObj.title, taskObj.description, taskObj.dueDate, taskObj.checkStatus, taskObj.importance)) : [];
 
-if (!tasksArrJason) {
-    const currentDateFormatted = format(new Date(), 'yyyy-MM-dd');
-    const initialTask1 = new Task('Welcome to the "todo-List"', 'Organize your work and life, finally.', currentDateFormatted, 'notChecked', 'notImportant');
-    const initialTask2 = new Task('Create your first task', 'Clicking "add task" to start.', currentDateFormatted, 'notChecked', 'important');
-    const initialTask3 = new Task('Create your first project', 'Use "Quick Start Templates" to create your first project.', currentDateFormatted, 'notChecked', 'notImportant');
-    tasksArr.push(initialTask1, initialTask2, initialTask3);
-    localStorage.setItem('tasksArr', JSON.stringify(tasksArr));
-}
+export const initiateTaskArr = (() => {
+    if (!tasksArrJason) {
+        const currentDateFormatted = format(new Date(), 'yyyy-MM-dd');
+        const initialTask1 = new Task('Welcome to the "todo-List"', 'Organize your work and life, finally.', currentDateFormatted, 'notChecked', 'notImportant');
+        const initialTask2 = new Task('Create your first task', 'Clicking "add task" to start.', currentDateFormatted, 'notChecked', 'important');
+        const initialTask3 = new Task('Create your first project', 'Use "Quick Start Templates" to create your first project.', currentDateFormatted, 'notChecked', 'notImportant');
+        tasksArr.push(initialTask1, initialTask2, initialTask3);
+        localStorage.setItem('tasksArr', JSON.stringify(tasksArr));
+    }
+})();
+
 
 const contentContainer = document.querySelector('.contentContainer');
 
@@ -248,11 +250,11 @@ class TaskListNodeManager {
     }
 }
 
-const taskManager = new TaskListNodeManager(contentContainer);
+export const taskManager = new TaskListNodeManager(contentContainer);
 
 export const tasksControl = () => {
     taskManager.buildSkeleton();
-    taskManager.showDomNodes('today');
+    taskManager.showDomNodes();
     const tasksPanel = document.querySelector('.sidebar>.tasks');
     tasksPanel.addEventListener('click', (event) => {
         const target = event.target;

@@ -160,7 +160,7 @@ nav>div {
     overflow: hidden;
 }
 
-.dropdownMenu a {
+.dropdownMenu>* {
     color: black;
     padding: 12px 16px;
     font-size: 1rem;
@@ -168,7 +168,8 @@ nav>div {
     display: block;
 }
 
-.dropdownMenu a:hover {
+.dropdownMenu>*:hover {
+    cursor: pointer;
     background-color: var(--color-hover);
 }
 
