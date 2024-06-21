@@ -11,8 +11,9 @@
 }
 
 :root {
-    --color-hover: rgb(255, 255, 255);
+    --color-hover: rgb(240, 240, 240);
     --color-background: rgb(242, 237, 226);
+    --color-liner-background: rgb(208, 208, 208);
     --color-text: black;
     --color-chosen: rgb(220, 171, 135);
     --color-task-background: white;
@@ -182,7 +183,7 @@ nav>div {
     font-size: 1rem;
     text-decoration: none;
     display: block;
-    background: linear-gradient(to top, rgb(208, 208, 208) 1px, white 1px);
+    background: linear-gradient(to top, var(--color-liner-background) 1px, white 1px);
 }
 
 .dropdownMenu>*:last-child {
@@ -191,7 +192,7 @@ nav>div {
 
 .dropdownMenu>*:hover {
     cursor: pointer;
-    background: var(--color-hover);
+    background: var(--color-liner-background);
 }
 
 .contentContainer>div {
@@ -228,7 +229,7 @@ nav>div {
     min-width: 30rem;
     padding: 0.5rem 0;
     border-radius: 0.5rem;
-    background: linear-gradient(to top, rgb(208, 208, 208) 3px, white 3px);
+    background: linear-gradient(to top, var(--color-liner-background) 3px, white 3px);
 }
 
 .contentContainer>div>.contentEditable {
@@ -402,11 +403,11 @@ body.dark-mode .templates>div:hover {
 
 body.dark-mode .dropdownMenu>* {
     color: white;
-    background: var(--color-chosen);
+    background: linear-gradient(to top, var(--dark-color-hover) 1px, var(--color-chosen) 1px);
 }
 
 body.dark-mode .dropdownMenu>*:hover {
-    background-color: var(--dark-color-hover);
+    background: var(--dark-color-hover);
 }
 
 body.dark-mode .contentContainer>div>.task {
