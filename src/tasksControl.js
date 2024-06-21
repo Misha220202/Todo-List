@@ -145,6 +145,17 @@ class TaskListNodeManager {
                     <p>${group.date}</p>
                 </div>`;
 
+            if (group.title == 'OverDue') {
+                const button = document.createElement('button');
+                button.textContent = 'Reschedule';
+                button.classList.add('reschedule');
+                groupNode.firstElementChild.appendChild(button);
+                button.addEventListener('click', () => {
+                    group.tasks.forEach(task => task.dueDate = this[`day1Formatted`]);
+                    this.update();
+                });
+            }
+
             group.tasks.forEach(task => {
                 const taskNode = this.createNode(task);
                 this.activateTaskNodeButtonFunctions(taskNode);

@@ -1,5 +1,5 @@
 import { format, addDays } from 'date-fns';
-import { initiateTaskArr,taskManager } from './tasksControl.js';
+import { initiateTaskArr, taskManager } from './tasksControl.js';
 
 class User {
     constructor(username, profileUrl) {
@@ -49,7 +49,9 @@ export const dropdownMenuControl = () => {
     dropdownMenu.addEventListener('click', async event => {
         const target = event.target;
         const id = target.id;
-        if (id === 'setProfile') {
+        if (id == 'darkmode') {
+            document.body.classList.toggle('dark-mode');
+        } else if (id === 'setProfile') {
             const dialog = document.createElement('dialog');
             dialog.classList.add('setProfileDialog');
             const cancelUrl = require('./assets/images/x-square.svg');
@@ -84,7 +86,7 @@ export const dropdownMenuControl = () => {
 
             const submit = dialog.querySelector('button[type="submit"]');
             submit.addEventListener('click', async event => {
-                event.preventDefault(); 
+                event.preventDefault();
                 const nameInput = dialog.querySelector('#Name');
                 const profileInput = dialog.querySelector('#Profile');
                 if (nameInput.value) {

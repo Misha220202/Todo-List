@@ -11,7 +11,19 @@
 }
 
 :root {
-    --color-hover: rgb(228, 228, 228);
+    --color-hover: rgb(255, 255, 255);
+    --color-background: rgb(242, 237, 226);
+    --color-text: black;
+    --color-chosen: rgb(220, 171, 135);
+    --color-task-background: white;
+    --color-task-gradient: rgb(208, 208, 208);
+
+    /* Dark mode variables  */
+    --dark-color-hover: rgb(80, 80, 80);
+    --dark-color-background: rgb(50, 50, 50);
+    --dark-color-text: white;
+    --dark-color-task-background: rgb(55, 55, 55);
+    --dark-color-task-gradient: rgb(60, 60, 60);
 }
 
 body {
@@ -19,6 +31,8 @@ body {
     display: flex;
     min-height: 100vh;
     font-family: gagliostro;
+    background-color: var(--color-background);
+    color: var(--color-text);
 }
 
 .sidebar {
@@ -27,7 +41,7 @@ body {
     width: 20rem;
     padding: 0 0.5rem;
     gap: 1rem;
-    background-color: rgb(242, 237, 226);
+    background-color: var(--color-background);
 }
 
 .logo {
@@ -88,7 +102,7 @@ body {
 }
 
 .tasks>div.chosen {
-    background-color: rgb(244, 221, 204);
+    background-color: var(--color-chosen);
 }
 
 .sidebarTitle {
@@ -130,9 +144,9 @@ nav>div {
 .userProfileContainer {
     width: 2.5rem;
     height: 2.5rem;
-    border-radius: 50%; 
+    border-radius: 50%;
     overflow: hidden;
-    position: relative; 
+    position: relative;
 }
 
 .userProfileContainer img {
@@ -168,11 +182,16 @@ nav>div {
     font-size: 1rem;
     text-decoration: none;
     display: block;
+    background: linear-gradient(to top, rgb(208, 208, 208) 1px, white 1px);
+}
+
+.dropdownMenu>*:last-child {
+    background: white;
 }
 
 .dropdownMenu>*:hover {
     cursor: pointer;
-    background-color: var(--color-hover);
+    background: var(--color-hover);
 }
 
 .contentContainer>div {
@@ -187,8 +206,21 @@ nav>div {
 
 .contentContainer>div>.titleBar {
     display: flex;
+    padding-bottom: 0.5rem;
+    justify-content: space-between;
     align-items: baseline;
     gap: 1rem;
+}
+
+.reschedule {
+    border: none;
+    background: none;
+    font-size: 1.2rem;
+    color: var(--color-chosen);
+}
+
+.reschedule:hover {
+    cursor: pointer;
 }
 
 .contentContainer>div>.task {
@@ -204,7 +236,7 @@ nav>div {
 }
 
 .contentContainer>div>.task:last-child {
-    background: none;
+    background: white;
 }
 
 .task>.iconButtonContainer {
@@ -350,4 +382,37 @@ form button:hover {
 
 .inValid {
     border: 1px solid red;
+}
+
+/* Dark mode styles */
+body.dark-mode {
+    background-color: var(--dark-color-background);
+    color: var(--dark-color-text);
+}
+
+body.dark-mode .sidebar {
+    background-color: var(--dark-color-background);
+}
+
+body.dark-mode .sidebar>.tasks>.addTask:hover,
+body.dark-mode .tasks>div:hover,
+body.dark-mode .templates>div:hover {
+    background-color: var(--dark-color-hover);
+}
+
+body.dark-mode .dropdownMenu>* {
+    color: white;
+    background: var(--color-chosen);
+}
+
+body.dark-mode .dropdownMenu>*:hover {
+    background-color: var(--dark-color-hover);
+}
+
+body.dark-mode .contentContainer>div>.task {
+    background: linear-gradient(to top, var(--dark-color-task-gradient) 3px, var(--dark-color-task-background) 3px);
+}
+
+body.dark-mode .contentContainer>div>.task:last-child {
+    background: var(--dark-color-task-background);
 }
