@@ -15,7 +15,7 @@ class Task {
 const tasksArrJson = localStorage.getItem('tasksArr');
 const tasksArr = tasksArrJson ? JSON.parse(tasksArrJson).map(taskObj => new Task(taskObj.title, taskObj.description, taskObj.dueDate, taskObj.checkStatus, taskObj.importance)) : [];
 
-export const initiateTaskArr = (() => {
+export const initiateTaskArr = () => {
     if (!tasksArrJson) {
         const currentDateFormatted = format(new Date(), 'yyyy-MM-dd');
         const initialTask1 = new Task('Welcome to the "todo-List"', 'Organize your work and life, finally.', currentDateFormatted, 'notChecked', 'notImportant');
@@ -24,8 +24,8 @@ export const initiateTaskArr = (() => {
         tasksArr.push(initialTask1, initialTask2, initialTask3);
         localStorage.setItem('tasksArr', JSON.stringify(tasksArr));
     }
-})();
-
+};
+initiateTaskArr();
 
 const contentContainer = document.querySelector('.contentContainer');
 

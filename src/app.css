@@ -128,19 +128,21 @@ nav>div {
 }
 
 .userProfileContainer {
-    padding: 10px;
-    border: 2px solid #ccc;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40px;
-    height: 40px;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%; 
+    overflow: hidden;
+    position: relative; 
 }
 
 .userProfileContainer img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
     width: 100%;
-    height: auto;
+    height: 100%;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
 }
 
 .username {

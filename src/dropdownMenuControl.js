@@ -1,5 +1,5 @@
 import { format, addDays } from 'date-fns';
-import { initiateTaskArr } from './tasksControl.js';
+import { initiateTaskArr,taskManager } from './tasksControl.js';
 
 class User {
     constructor(username, profileUrl) {
@@ -9,23 +9,33 @@ class User {
 }
 
 const userJson = localStorage.getItem('user');
-const user = userJson ? new User(...Object.values(JSON.parse(userJson))) : null;
+const userObj = JSON.parse(userJson);
+let user = userObj ? new User(userObj.username, userObj.profileUrl) : null;
 const userNode = document.querySelector('.user');
 
-const initiateUser = (()=>{
+const setUser = () => {
     if (!userJson) {
-        const defaultUserProfileUrl = require('./assets/images/user.svg');
-        const defaultUser = new User('Username',defaultUserProfileUrl);
-        console.log(defaultUserProfileUrl);
-        const usernameNode = userNode.querySelector('p.username');
-        const userProfileNode = userNode.querySelector('div.userProfileContainer>img');
-        usernameNode.textContent = defaultUser.username;
-        userProfileNode.src = defaultUser.profileUrl;
+        const profileUrl = require('./assets/images/user.svg');
+        user = new User('Username', profileUrl);
     }
-})();
+    const usernameNode = userNode.querySelector('p.username');
+    const userProfileNode = userNode.querySelector('div.userProfileContainer>img');
+    usernameNode.textContent = user.username;
+    userProfileNode.src = user.profileUrl;
+    localStorage.setItem('user', JSON.stringify(user));
+};
 
+const handleFileRead = (file) => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = event => resolve(event.target.result);
+        reader.onerror = error => reject(error);
+        reader.readAsDataURL(file);
+    });
+};
 
 export const dropdownMenuControl = () => {
+    setUser();
     const dropdownMenu = document.querySelector('.dropdownMenu');
 
     userNode.addEventListener('click', () => dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block');
@@ -36,14 +46,10 @@ export const dropdownMenuControl = () => {
         }
     });
 
-    // const setProfile = dropdownMenu.querySelector('#setProfile');
-    // const logOut = dropdownMenu.querySelector('#logOut');
-    // const reset = dropdownMenu.querySelector('#reset');
-
-    dropdownMenu.addEventListener('click', event => {
+    dropdownMenu.addEventListener('click', async event => {
         const target = event.target;
         const id = target.id;
-        if (id == 'setProfile') {
+        if (id === 'setProfile') {
             const dialog = document.createElement('dialog');
             dialog.classList.add('setProfileDialog');
             const cancelUrl = require('./assets/images/x-square.svg');
@@ -55,7 +61,7 @@ export const dropdownMenuControl = () => {
                 <fieldset>
                     <div>
                         <label for="Name">Name</label>
-                        <input type="text" id="Name" name="Name" value="Username">
+                        <input type="text" id="Name" name="Name">
                     </div>
                     <div>
                         <label for="Profile">Profile</label>
@@ -76,17 +82,31 @@ export const dropdownMenuControl = () => {
                 body.removeChild(dialog);
             });
 
-            const submit = dialog.querySelector('button');
-            submit.addEventListener('click', event => {
+            const submit = dialog.querySelector('button[type="submit"]');
+            submit.addEventListener('click', async event => {
+                event.preventDefault(); 
+                const nameInput = dialog.querySelector('#Name');
+                const profileInput = dialog.querySelector('#Profile');
+                if (nameInput.value) {
+                    user.username = nameInput.value;
+                }
+                if (profileInput.files[0]) {
+                    try {
+                        user.profileUrl = await handleFileRead(profileInput.files[0]);
+                    } catch (error) {
+                        console.error("读取文件时出错：", error);
+                    }
+                }
+                setUser();
+                dialog.close();
+                body.removeChild(dialog);
+            });
 
-            })
-
-        } else if (id == 'logOut') {
-            ;
-        } else if (id == 'reset') {
-            localStorage.clear();
-            initiateTaskArr;
+        } else if (id === 'logOut') {
+            // 处理登出功能
+        } else if (id === 'reset') {
+            localStorage.removeItem('tasksArr');
             location.reload();
         }
-    })
+    });
 };
