@@ -1,5 +1,5 @@
 import './login.css'
-import { PublicClientApplication } from '@azure/msal-browser';
+import { PublicClientApplication, LogLevel, EventType, InteractionRequiredAuthError } from '@azure/msal-browser';
 
 /**
  * Enter here the user flows and custom policies for your B2C application
@@ -54,16 +54,16 @@ const msalConfig = {
                     return;
                 }
                 switch (level) {
-                    case msal.LogLevel.Error:
+                    case LogLevel.Error:
                         console.error(message);
                         return;
-                    case msal.LogLevel.Info:
+                    case LogLevel.Info:
                         console.info(message);
                         return;
-                    case msal.LogLevel.Verbose:
+                    case LogLevel.Verbose:
                         console.debug(message);
                         return;
-                    case msal.LogLevel.Warning:
+                    case LogLevel.Warning:
                         console.warn(message);
                         return;
                 }
@@ -107,6 +107,17 @@ const loginRequest = {
 const myMSALObj = new PublicClientApplication(msalConfig);
 console.log(`myMSALObj is created: ${myMSALObj}`);
 
+async function initializeMsal() {
+    await myMSALObj.initialize(); // 确保初始化完成
+}
+
+// 在你的代码中调用 initializeMsal 进行初始化
+initializeMsal().then(() => {
+    console.log("MSAL initialized");
+}).catch(error => {
+    console.error("Error initializing MSAL:", error);
+});
+
 let accountId = '';
 let username = '';
 
@@ -129,8 +140,8 @@ function welcomeUser(username) {
 myMSALObj.addEventCallback((event) => {
     console.log(event.eventType);
     if (
-        (event.eventType === msal.EventType.LOGIN_SUCCESS ||
-            event.eventType === msal.EventType.ACQUIRE_TOKEN_SUCCESS) &&
+        (event.eventType === EventType.LOGIN_SUCCESS ||
+            event.eventType === EventType.ACQUIRE_TOKEN_SUCCESS) &&
         event.payload.account
     ) {
         /**
@@ -160,7 +171,7 @@ myMSALObj.addEventCallback((event) => {
                 window.location.reload();
             }).catch((error) => {
                 console.log(error);
-                if (error instanceof msal.InteractionRequiredAuthError) {
+                if (error instanceof InteractionRequiredAuthError) {
                     myMSALObj.loginPopup({
                         ...signUpSignInFlowRequest,
                     });
@@ -218,7 +229,7 @@ function selectAccount() {
                 scopes: ['openid'],
             })
             .then((response) => {
-                updateTable(response.idTokenClaims);
+                console.log(response.idTokenClaims);
             });
 
     } else if (currentAccounts.length === 1) {
@@ -236,13 +247,13 @@ function selectAccount() {
                 scopes: ['openid'],
             })
             .then((response) => {
-                updateTable(response.idTokenClaims);
+                console.log(response.idTokenClaims);
             });
     }
 }
 
 // in case of page refresh
-selectAccount();
+// selectAccount();
 
 function handleResponse(response) {
     /**
@@ -255,7 +266,6 @@ function handleResponse(response) {
         username = response.account.username;
         console.log(accountId, username);
         welcomeUser(username);
-        updateTable(response.idTokenClaims);
         console.log(response.idTokenClaims);
     } else {
         selectAccount();
@@ -284,6 +294,8 @@ export function signIn() {
             }
         });
 }
+
+signInButton.addEventListener('click',signIn);
 
 export function signOut() {
     /**
@@ -314,14 +326,14 @@ export function getTokenPopup(request) {
             // In case the response from B2C server has an empty accessToken field
             // throw an error to initiate token acquisition
             if (!response.accessToken || response.accessToken === '') {
-                throw new msal.InteractionRequiredAuthError();
+                throw new InteractionRequiredAuthError();
             }
             return response;
         })
         .catch((error) => {
             console.log(error);
             console.log('silent token acquisition fails. acquiring token using popup');
-            if (error instanceof msal.InteractionRequiredAuthError) {
+            if (error instanceof InteractionRequiredAuthError) {
                 // fallback to interaction when silent call fails
                 return myMSALObj
                     .acquireTokenPopup({
