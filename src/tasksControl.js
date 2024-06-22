@@ -182,6 +182,7 @@ class TaskListNodeManager {
 
     update() {
         localStorage.setItem('tasksArr', JSON.stringify(this.arr));
+        console.log(`tasksArr is ${JSON.stringify(tasksArr)}`)
         while (this.element.firstChild) {
             this.element.removeChild(this.element.firstChild);
         }

@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "private": true,
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
@@ -24,6 +25,8 @@
     "xml-loader": "^1.2.1"
   },
   "dependencies": {
+    "@azure/msal-browser": "^3.17.0",
+    "azure-kusto-data": "^6.0.2",
     "date-fns": "^3.6.0"
   }
 }
