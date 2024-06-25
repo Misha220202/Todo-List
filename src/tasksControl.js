@@ -2,25 +2,59 @@ import { format, addDays } from 'date-fns';
 import { classFindParentContainer, idFindParentContainer } from './findParentContainer.js';
 
 class Task {
-    constructor(title, description, dueDate, checkStatus, importance) {
+    constructor(title, description, dueDateFormatted, checkStatus, recurringCycle = 0, importance = 'notImportant') {
         this.title = title;
         this.description = description;
-        this.dueDate = dueDate;
+        this.dueDateFormatted = dueDateFormatted;//"YYYY-MM-DD"
         this.checkStatus = checkStatus;
+        this.recurringCycle = recurringCycle;//in Days
         this.importance = importance;
-        this.id = (title + description).replace(/\s/g, "");
+    }
+
+    get dueDate() {
+        return new Date(this.dueDateFormatted + 'T00:00:00');
+    }
+
+    get id() {
+        return (this.title + this.description + this.dueDateFormatted).replace(/\s/g, "");
+    }
+
+    updateDueDateFormatted() {
+        if (this.recurringCycle > 0) {
+            const newDueDate = this.dueDate;
+            if (this.recurringCycle === 30) { // Monthly
+                newDueDate.setMonth(newDueDate.getMonth() + 1);
+            } else {
+                newDueDate.setDate(newDueDate.getDate() + this.recurringCycle);
+            }
+            this.dueDateFormatted = format(newDueDate, 'yyyy-MM-dd');
+        }
+    }
+
+    updateCheckStatus() {
+        if (this.recurringCycle > 0) {
+            this.checkStatus = 'notChecked';
+        }
+    }
+
+    checkAndUpdate() {
+        const today = new Date().setHours(0, 0, 0, 0);
+        if (this.recurringCycle > 0 && today > this.dueDate) {
+            this.updateDueDateFormatted();
+            this.updateCheckStatus();
+        }
     }
 }
 
 const tasksArrJson = localStorage.getItem('tasksArr');
-const tasksArr = tasksArrJson ? JSON.parse(tasksArrJson).map(taskObj => new Task(taskObj.title, taskObj.description, taskObj.dueDate, taskObj.checkStatus, taskObj.importance)) : [];
+const tasksArr = tasksArrJson ? JSON.parse(tasksArrJson).map(taskObj => new Task(taskObj.title, taskObj.description, taskObj.dueDateFormatted, taskObj.checkStatus, Number(taskObj.recurringCycle), taskObj.importance)) : [];
 
 export const initiateTaskArr = () => {
     if (!tasksArrJson) {
-        const currentDateFormatted = format(new Date(), 'yyyy-MM-dd');
-        const initialTask1 = new Task('Welcome to the "todo-List"', 'Organize your work and life, finally.', currentDateFormatted, 'notChecked', 'notImportant');
-        const initialTask2 = new Task('Create your first task', 'Clicking "add task" to start.', currentDateFormatted, 'notChecked', 'important');
-        const initialTask3 = new Task('Create your first project', 'Use "Quick Start Templates" to create your first project.', currentDateFormatted, 'notChecked', 'notImportant');
+        const currentDateFormatted = format(new Date().setHours(0, 0, 0, 0), 'yyyy-MM-dd');
+        const initialTask1 = new Task('Welcome to the "todo-List"', 'Organize your work and life, finally.', currentDateFormatted, 'notChecked');
+        const initialTask2 = new Task('Create your first task', 'Clicking "add task" to start.', currentDateFormatted, 'notChecked', 0, 'important');
+        const initialTask3 = new Task('Create your first project', 'Use "Quick Start Templates" to create your first project.', currentDateFormatted, 'notChecked');
         tasksArr.push(initialTask1, initialTask2, initialTask3);
         localStorage.setItem('tasksArr', JSON.stringify(tasksArr));
     }
@@ -32,14 +66,9 @@ const contentContainer = document.querySelector('.contentContainer');
 class TaskListNodeManager {
     constructor(element) {
         this.element = element;
-        this.arr = tasksArr;
         this.controlPanelContainer = document.querySelector('.sidebar>.tasks');
         this.titles = ['Today', 'Tomorrow', 'Day-3', 'Day-4', 'Day-5', 'Day-6', 'Days-7', 'Future', 'Important', 'Overdue', 'Completed'];
         this.initDates();
-    }
-
-    filterTasksByDate(date) {
-        return this.arr.filter(task => task.dueDate === date && task.checkStatus == 'notChecked');
     }
 
     initDates() {
@@ -52,9 +81,12 @@ class TaskListNodeManager {
         }
     }
 
+    filterTasksByDate(date) {
+        return tasksArr.filter(task => task.dueDateFormatted == date && task.checkStatus == 'notChecked');
+    }
+
     groups() {
         const groups = [];
-
         for (let i = 0; i < 7; i++) {
             const title = this.titles[i];
             const formattedDate = this[`day${i + 1}Formatted`];
@@ -62,16 +94,16 @@ class TaskListNodeManager {
             groups.push({ title, tasks, date: formattedDate });
         }
 
-        const futureTasks = this.arr.filter(task => task.dueDate > this[`day7Formatted`] && task.checkStatus == 'notChecked');
+        const futureTasks = tasksArr.filter(task => task.dueDate > this[`day7`] && task.checkStatus == 'notChecked');
         groups.push({ title: 'Future', tasks: futureTasks, date: `After ${this[`day${7}Formatted`]}` });
 
-        const importantTasks = this.arr.filter(task => task.importance == 'important' && task.checkStatus == 'notChecked');
+        const importantTasks = tasksArr.filter(task => task.importance == 'important' && task.checkStatus == 'notChecked');
         groups.push({ title: 'Important', tasks: importantTasks, date: `` });
 
-        const overdueTasks = this.arr.filter(task => task.dueDate < this[`day1Formatted`] && task.checkStatus == 'notChecked');
+        const overdueTasks = tasksArr.filter(task => task.dueDate < this[`day1`] && task.checkStatus == 'notChecked' && task.recurringCycle == 0);
         groups.push({ title: 'OverDue', tasks: overdueTasks, date: `` });
 
-        const completedTasks = this.arr.filter(task => task.checkStatus == 'checked');
+        const completedTasks = tasksArr.filter(task => task.checkStatus == 'checked' && task.recurringCycle == 0);
         groups.push({ title: 'Completed', tasks: completedTasks, date: `` });
 
         return groups;
@@ -93,16 +125,32 @@ class TaskListNodeManager {
                 <img class="checkButton" src="${checkUrl}" alt="check-square">
                 <img class="deleteButton" src="${deleteUrl}" alt="trash-2">
             </div>
-            <p class="title"><span class="tag">Title:</span><span class="content" contentEditable=false tabindex="-1">${task.title}</span>
+            <p class="title">
+                <span class="tag">Title:</span>
+                <span class="content" contentEditable=false tabindex="-1">${task.title}</span>
             </p>
-            <p class="description"><span class="tag">Description:</span><span class="content"
-                    contentEditable=false>${task.description}</span></p>
-            <p class="dueDate"><span class="tag">dueDate:</span><span class="content"
-                    contentEditable=false>${task.dueDate}</span></p>
+            <p class="description">
+                <span class="tag">Description:</span>
+                <span class="content" contentEditable=false>${task.description}</span>
+            </p>
+            <p class="dueDate">
+                <span class="tag">DueDate:</span>
+                <span class="content">${task.dueDateFormatted}</span>
+            </p>
+            <p class="recurringCycle">
+                <span class="tag">RecurringCycle: </span>
+                <span class="content">Every ${task.recurringCycle} day(s)</span>
+            </p>
             <div class="buttonContainer hidden">
                 <button class="submit">Submit</button>
                 <button class="cancel">Cancel</button>
             </div>`;
+
+        const recurringCycleNode = taskNode.querySelector('.recurringCycle');
+        if (task.recurringCycle == 0) {
+            recurringCycleNode.classList.add('hidden');
+        }
+
         return taskNode;
     }
 
@@ -118,7 +166,7 @@ class TaskListNodeManager {
                 return -1;
             }
             const id = taskNode.id;
-            const index = findIndexById(this.arr, id);
+            const index = findIndexById(tasksArr, id);
             const target = event.target;
 
             if (target.classList.contains('editButton')) {
@@ -151,7 +199,7 @@ class TaskListNodeManager {
                 button.classList.add('reschedule');
                 groupNode.firstElementChild.appendChild(button);
                 button.addEventListener('click', () => {
-                    group.tasks.forEach(task => task.dueDate = this[`day1Formatted`]);
+                    group.tasks.forEach(task => task.dueDateFormatted = this[`day1Formatted`]);
                     this.update();
                 });
             }
@@ -172,15 +220,20 @@ class TaskListNodeManager {
         const activePanel = Array.from(this.controlPanelContainer.children).find(panel => panel.classList.contains('chosen'));
         const id = activePanel.id;
         const children = this.element.children;
-        if (id == 'today') {
+        if (id == 'today' && children[0].children[1]) {
+            //groupNode has other children other than titleBar
             children[0].classList.remove('hidden');
         } else if (id == 'nextSevenDays') {
             for (let i = 0; i < 7; i++) {
-                children[i].classList.remove('hidden');
+                if (children[i].children[1]) {
+                    children[i].classList.remove('hidden');
+                }
             }
         } else if (id == 'allTasks') {
             for (let i = 0; i < 8; i++) {
-                children[i].classList.remove('hidden');
+                if (children[i].children[1]) {
+                    children[i].classList.remove('hidden');
+                }
             }
         } else if (id == 'important') {
             children[8].classList.remove('hidden');
@@ -192,7 +245,8 @@ class TaskListNodeManager {
     }
 
     update() {
-        localStorage.setItem('tasksArr', JSON.stringify(this.arr));
+        tasksArr.forEach(task => task.checkAndUpdate());
+        localStorage.setItem('tasksArr', JSON.stringify(tasksArr));
         while (this.element.firstChild) {
             this.element.removeChild(this.element.firstChild);
         }
@@ -201,7 +255,7 @@ class TaskListNodeManager {
     }
 
     add(task) {
-        this.arr.push(task);
+        tasksArr.push(task);
         this.update();
     }
 
@@ -212,21 +266,40 @@ class TaskListNodeManager {
         const submit = taskNode.querySelector('.submit');
         const cancel = taskNode.querySelector('.cancel');
         const contents = taskNode.querySelectorAll('p>.content');
+
+        const titleBeingEdited = contents[0];
+        titleBeingEdited.setAttribute('contentEditable', true);
+
+        const descriptionBeingEdited = contents[1];
+        descriptionBeingEdited.setAttribute('contentEditable', true);
+
         const dueDateNodeBeingEdited = contents[2];
+        dueDateNodeBeingEdited.innerHTML = `<input type="date" value="${tasksArr[index].dueDateFormatted}"></input>`;
+
+        const recurringCycleBeingEdited = contents[3];
+        recurringCycleBeingEdited.parentNode.classList.remove('hidden');
+        recurringCycleBeingEdited.innerHTML = `<span>Every </span><input type="number" min=0 max=999 value="${tasksArr[index].recurringCycle}"></input><span> day(s)</span>`;
 
         iconButtonContainers.forEach(iconButtonContainer => iconButtonContainer.classList.add('blank'));
         buttonContainer.classList.remove('hidden');
 
-        contents.forEach(content => content.setAttribute('contentEditable', true));
-        dueDateNodeBeingEdited.innerHTML = `<input type="date" value="${this.arr[index].dueDate}"></input>`;
-
         submit.addEventListener('click', () => {
-            (iconButtonContainer => iconButtonContainer.classList.remove('blank'));
-            buttonContainer.classList.add('hidden');
+
             contents.forEach(content => content.setAttribute('contentEditable', false));
-            this.arr[index].title = contents[0].textContent;
-            this.arr[index].description = contents[1].textContent;
-            this.arr[index].dueDate = dueDateNodeBeingEdited.firstChild.value;
+
+            tasksArr[index].title = titleBeingEdited.textContent;
+            titleBeingEdited.setAttribute('contentEditable', false);
+
+            tasksArr[index].description = descriptionBeingEdited.textContent;
+            descriptionBeingEdited.setAttribute('contentEditable', false);
+
+            tasksArr[index].dueDateFormatted = dueDateNodeBeingEdited.firstChild.value;
+
+            tasksArr[index].recurringCycle = parseInt(recurringCycleBeingEdited.children[1].value);
+
+            iconButtonContainers.forEach(iconButtonContainer => iconButtonContainer.classList.remove('blank'));
+            buttonContainer.classList.add('hidden');
+
             this.update();
         })
 
@@ -236,12 +309,12 @@ class TaskListNodeManager {
     }
 
     delete(index) {
-        this.arr.splice(index, 1);
+        tasksArr.splice(index, 1);
         this.update();
     }
 
     toggleCheckStatus(index) {
-        const toggledTask = this.arr[index];
+        const toggledTask = tasksArr[index];
         if (toggledTask.checkStatus == 'checked') {
             toggledTask.checkStatus = 'notChecked';
         } else {
@@ -251,7 +324,7 @@ class TaskListNodeManager {
     }
 
     toggleImportance(index) {
-        const toggledTask = this.arr[index];
+        const toggledTask = tasksArr[index];
         if (toggledTask.importance == 'important') {
             toggledTask.importance = 'notImportant';
         } else {
@@ -297,6 +370,10 @@ export const tasksControl = () => {
                         <input type="date" id="DueDate" name="DueDate">
                     </div>
                     <p>
+                        <label for="RecurringCheckBox">Is it a recurring task?</label>
+                        <input type="checkbox" id="RecurringCheckBox" name="RecurringCheckBox">
+                    </p>
+                    <p>
                         <label for="Importance">Is it important?</label>
                         <input type="checkbox" id="Importance" name="Importance">
                     </p>
@@ -327,6 +404,19 @@ export const tasksControl = () => {
                 })
             })
 
+            const recurringCheckBox = inputs[3];
+            recurringCheckBox.addEventListener('change', () => {
+                const parentNode = recurringCheckBox.parentNode;
+                parentNode.innerHTML = `
+                <label for="RecurringCycle">Recurring Cycle:</label>
+                <select id="RecurringCycle">
+                    <option value="1">Daily</option>
+                    <option value="7" selected>Weekly</option>
+                    <option value="14">Bi-Weekly</option>
+                    <option value="30">Monthly</option>
+                </select>`;
+            })
+
             const submit = dialog.querySelector('button');
             submit.addEventListener('click', event => {
                 let allValid = true;
@@ -340,11 +430,13 @@ export const tasksControl = () => {
                 if (allValid == true) {
                     const titleInput = dialog.querySelector('#Title').value;
                     const descriptionInput = dialog.querySelector('#Description').value;
-                    const dueDateInput = dialog.querySelector('#DueDate').value;
+                    const dueDateFormattedInput = dialog.querySelector('#DueDate').value;
+                    const recurringInputNode = dialog.querySelector('#RecurringCycle');
+                    const recurringInput = recurringInputNode ? recurringInputNode.value : 0;
                     const importanceCheckBox = dialog.querySelector('#Importance');
                     const importanceInput = importanceCheckBox.checked == true ? 'important' : 'notImportant';
 
-                    const task = new Task(titleInput, descriptionInput, dueDateInput, 'notChecked', importanceInput);
+                    const task = new Task(titleInput, descriptionInput, dueDateFormattedInput, 'notChecked', Number(recurringInput), importanceInput);
                     taskManager.add(task);
                     dialog.close();
                     body.removeChild(dialog);

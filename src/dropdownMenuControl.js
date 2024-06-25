@@ -1,6 +1,3 @@
-import { format, addDays } from 'date-fns';
-import { initiateTaskArr, taskManager } from './tasksControl.js';
-
 class User {
     constructor(username, profileUrl) {
         this.username = username;
@@ -62,8 +59,8 @@ export const dropdownMenuControl = () => {
             <form action="#" method="dialog">
                 <fieldset>
                     <div>
-                        <label for="Name">Name</label>
-                        <input type="text" id="Name" name="Name">
+                        <label for="Username">Username</label>
+                        <input type="text" id="Username" name="Username">
                     </div>
                     <div>
                         <label for="Profile">Profile</label>
@@ -87,10 +84,10 @@ export const dropdownMenuControl = () => {
             const submit = dialog.querySelector('button[type="submit"]');
             submit.addEventListener('click', async event => {
                 event.preventDefault();
-                const nameInput = dialog.querySelector('#Name');
+                const usernameInput = dialog.querySelector('#Username');
                 const profileInput = dialog.querySelector('#Profile');
-                if (nameInput.value) {
-                    user.username = nameInput.value;
+                if (usernameInput.value) {
+                    user.username = usernameInput.value;
                 }
                 if (profileInput.files[0]) {
                     try {

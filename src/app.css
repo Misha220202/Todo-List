@@ -200,6 +200,10 @@ nav>div {
     background: var(--color-liner-background);
 }
 
+.contentContainer {
+    padding-bottom: 0.5rem;
+}
+
 .contentContainer>div {
     display: flex;
     flex-direction: column;
@@ -216,6 +220,10 @@ nav>div {
     justify-content: space-between;
     align-items: baseline;
     gap: 1rem;
+}
+
+.contentContainer>div>.hidden {
+    display: none;
 }
 
 .reschedule {
@@ -282,15 +290,23 @@ nav>div {
     padding: 0.2rem 1rem;
 }
 
+.task>p.hidden {
+    display: none;
+}
+
 .task span.tag {
     display: inline-block;
-    width: 6rem;
+    width: 8rem;
 }
 
 .task span.content {
     display: inline-block;
     min-width: 80%;
 }
+/* 
+.task input {
+    width: 8rem;
+} */
 
 .contentEditable span.content {
     background-color: var(--color-light-grey);
