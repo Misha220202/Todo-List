@@ -60,7 +60,7 @@ function passwordInputHandler() {
 
 const signup = document.querySelector('button');
 
-signup.addEventListener('click', (event) => {
+signup.addEventListener('click', event => {
     document.querySelectorAll('input').forEach(input => {
         input.addEventListener('focus', () => input.classList.remove('invalid'));
     })

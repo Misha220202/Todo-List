@@ -31,30 +31,28 @@ const handleFileRead = (file) => {
     });
 };
 
-export const dropdownMenuControl = () => {
+export const settingsControl = () => {
     setUser();
-    const dropdownMenu = document.querySelector('.dropdownMenu');
+    const settings = document.querySelector('.settings');
 
-    userNode.addEventListener('click', () => dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block');
+    userNode.addEventListener('click', () => settings.style.display = settings.style.display == 'block' ? 'none' : 'block');
 
-    document.addEventListener('click', event => {
-        if (!userNode.contains(event.target)) {
-            dropdownMenu.style.display = 'none';
-        }
+    userNode.parentNode.addEventListener('mouseleave', event => {
+        settings.style.display = 'none';
     });
 
-    dropdownMenu.addEventListener('click', async event => {
+    settings.addEventListener('click', async event => {
         const target = event.target;
         const id = target.id;
-        if (id == 'darkmode') {
-            document.body.classList.toggle('dark-mode');
-        } else if (id === 'setProfile') {
+        if (id == 'darkMode') {
+            document.body.classList.toggle('darkMode');
+        } else if (id == 'setProfile') {
             const dialog = document.createElement('dialog');
             dialog.classList.add('setProfileDialog');
             const cancelUrl = require('./assets/images/x-square.svg');
             dialog.innerHTML = `
-            <div class="iconContainer">
-                <img class="iconButton cancel" src="${cancelUrl}" alt="cancel">
+            <div class="cancelButtonContainer">
+                <img class="cancel" src="${cancelUrl}" alt="cancel">
              </div>
             <form action="#" method="dialog">
                 <fieldset>
@@ -101,10 +99,11 @@ export const dropdownMenuControl = () => {
                 body.removeChild(dialog);
             });
 
-        } else if (id === 'logOut') {
+        } else if (id == 'logOut') {
             // 处理登出功能
-        } else if (id === 'reset') {
+        } else if (id == 'reset') {
             localStorage.removeItem('tasksArr');
+            localStorage.removeItem('projectsArr');
             location.reload();
         }
     });

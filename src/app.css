@@ -11,9 +11,9 @@
 }
 
 :root {
-    --color-hover: rgb(240, 240, 240);
+    --color-hover: rgb(214, 180, 153);
     --color-body-background: rgb(242, 237, 226);
-    --color-sidebar-background:rgb(226, 209, 187);
+    --color-sidebar-background: rgb(226, 209, 187);
     --color-liner-background: rgb(208, 208, 208);
     --color-text: black;
     --color-chosen: rgb(220, 171, 135);
@@ -47,6 +47,11 @@ body {
     background-color: var(--color-sidebar-background);
 }
 
+.sidebar .imageContainer {
+    padding-top: 0.25rem;
+    width: 2rem;
+}
+
 .logo {
     display: flex;
     gap: 0.2rem;
@@ -67,14 +72,8 @@ body {
     object-fit: contain;
 }
 
-.sidebar>.tasks>.addTask>.imageContainer,
-.tasks>div>.imageContainer,
-.templates>div>.imageContainer {
-    width: 2rem;
-}
-
-.sidebar>.tasks>.addTask>.imageContainer>img,
-.tasks>div.chosen>.imageContainer>img {
+.addTask>.imageContainer>img,
+.sidebar .chosen>.imageContainer>img {
     filter: brightness(0) saturate(100%) invert(26%) sepia(100%) saturate(700%) hue-rotate(-9deg) brightness(95%) contrast(93%);
 }
 
@@ -97,27 +96,54 @@ body {
     font-size: 1.2rem;
 }
 
-.sidebar>.tasks>.addTask:hover,
+.projects>.sidebarTitle>.iconButtonContainer:hover {
+    cursor: pointer;
+}
+
 .tasks>div:hover,
-.templates>div:hover {
+.projects>.project:hover,
+.templates>.template:hover {
     background-color: var(--color-hover);
     cursor: pointer;
 }
 
-.tasks>div.chosen {
+.tasks>div.chosen,
+.projects>.project.chosen {
     background-color: var(--color-chosen);
+}
+
+.project>.projectTitle {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.project>.projectTitle>p {
+    display: block;
+    max-width: 8.5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.contentEditable>.projectTitle>p {
+    background-color: var(--color-light-grey);
+}
+
+.project>.iconButtonContainer {
+    display: flex;
+    gap: 0.2rem;
 }
 
 .sidebarTitle {
     justify-content: space-between;
 }
 
-.iconButtonContainer {
-    width: 2rem;
+.sidebarTitle>.iconButtonContainer {
     padding-top: 0.5rem;
 }
 
-.iconButtonContainer:hover,
 .user:hover {
     cursor: pointer;
 }
@@ -169,7 +195,7 @@ nav>div {
     padding: 1rem;
 }
 
-.dropdownMenu {
+.settings {
     display: none;
     position: absolute;
     top: 100%;
@@ -182,7 +208,7 @@ nav>div {
     overflow: hidden;
 }
 
-.dropdownMenu>* {
+.settings>* {
     color: black;
     padding: 12px 16px;
     font-size: 1rem;
@@ -191,11 +217,11 @@ nav>div {
     background: linear-gradient(to top, var(--color-liner-background) 1px, white 1px);
 }
 
-.dropdownMenu>*:last-child {
+.settings>*:last-child {
     background: white;
 }
 
-.dropdownMenu>*:hover {
+.settings>*:hover {
     cursor: pointer;
     background: var(--color-liner-background);
 }
@@ -210,19 +236,30 @@ nav>div {
     padding: 1rem 5rem;
 }
 
-.contentContainer>.hidden {
-    display: none;
-}
-
-.contentContainer>div>.titleBar {
+.contentContainer .titleBar {
     display: flex;
     padding-bottom: 0.5rem;
-    justify-content: space-between;
     align-items: baseline;
     gap: 1rem;
 }
 
-.contentContainer>div>.hidden {
+.contentContainer .addTask {
+    display: flex;
+    max-width: fit-content;
+    padding-top: 0.5rem;
+    align-items: center;
+    gap: 1rem;
+}
+
+.contentContainer .addTask:hover {
+    cursor: pointer;
+}
+
+.contentContainer .addTask>.imageContainer {
+    width: 2rem;
+}
+
+.contentContainer .hidden {
     display: none;
 }
 
@@ -245,7 +282,7 @@ nav>div {
     background: linear-gradient(to top, var(--color-liner-background) 3px, white 3px);
 }
 
-.contentContainer>div>.contentEditable {
+.contentEditable {
     border: 2px solid grey;
 }
 
@@ -255,8 +292,8 @@ nav>div {
 
 .task>.iconButtonContainer {
     position: absolute;
-    top: 0rem;
-    right: 6.5rem;
+    top: 0.2rem;
+    right: 0.5rem;
     display: flex;
     gap: 1rem;
 }
@@ -269,7 +306,7 @@ nav>div {
     width: 1.2rem;
 }
 
-.task>.iconButtonContainer>img:hover {
+.task>.iconButtonContainer>*:hover {
     cursor: pointer;
 }
 
@@ -290,10 +327,6 @@ nav>div {
     padding: 0.2rem 1rem;
 }
 
-.task>p.hidden {
-    display: none;
-}
-
 .task span.tag {
     display: inline-block;
     width: 8rem;
@@ -303,10 +336,6 @@ nav>div {
     display: inline-block;
     min-width: 80%;
 }
-/* 
-.task input {
-    width: 8rem;
-} */
 
 .contentEditable span.content {
     background-color: var(--color-light-grey);
@@ -317,7 +346,7 @@ nav>div {
     justify-content: center;
 }
 
-.task>.buttonContainer.hidden {
+.task .hidden {
     display: none;
 }
 
@@ -339,7 +368,7 @@ dialog {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border-radius: 2rem;
+    border-radius: 1.5rem;
 }
 
 form {
@@ -348,11 +377,15 @@ form {
     place-content: center;
     padding: 0 2rem;
     gap: 1rem;
-    width: 25rem;
+    width: 28rem;
 }
 
 .addTaskDialog>form {
     height: 20rem;
+}
+
+.addProjectTaskDialog>form {
+    height: 23rem;
 }
 
 .setProfileDialog>form {
@@ -370,6 +403,16 @@ fieldset {
 fieldset>* {
     display: flex;
     justify-content: center;
+    gap: 0.5rem;
+}
+
+fieldset>.group>div {
+    display: flex;
+    justify-content: center;
+}
+
+fieldset>.group input {
+    width: 8rem;
 }
 
 fieldset>p {
@@ -407,39 +450,43 @@ form button:hover {
 }
 
 /* Dark mode styles */
-body.dark-mode {
+body.darkMode {
     background-color: var(--dark-color-body-background);
     color: var(--dark-color-text);
 }
 
-body.dark-mode .sidebar {
+body.darkMode .sidebar {
     background-color: var(--dark-color-sidebar-background);
 }
 
-body.dark-mode .imageContainer>img,
-body.dark-mode .iconButtonContainer>img {
+body.darkMode .imageContainer>img,
+body.darkMode .iconButtonContainer>img {
     filter: brightness(0) invert(1);
 }
 
-body.dark-mode .sidebar>.tasks>.addTask:hover,
-body.dark-mode .tasks>div:hover,
-body.dark-mode .templates>div:hover {
+body.darkMode .tasks>div:hover,
+body.darkMode .projects>.project:hover,
+body.darkMode .templates>.template:hover {
     background-color: var(--dark-color-hover);
 }
 
-body.dark-mode .dropdownMenu>* {
+body.darkMode .settings>* {
     color: white;
     background: linear-gradient(to top, var(--dark-color-hover) 1px, var(--color-chosen) 1px);
 }
 
-body.dark-mode .dropdownMenu>*:hover {
+body.darkMode .settings>*:hover {
     background: var(--dark-color-hover);
 }
 
-body.dark-mode .contentContainer>div>.task {
+body.darkMode .contentContainer>div>.task {
     background: linear-gradient(to top, var(--dark-color-task-gradient) 3px, var(--dark-color-task-background) 3px);
 }
 
-body.dark-mode .contentContainer>div>.task:last-child {
+body.darkMode .contentContainer>div>.task:last-child {
     background: var(--dark-color-task-background);
+}
+
+body.darkMode .contentEditable span.content {
+    background-color: var(--dark-color-task-gradient);
 }

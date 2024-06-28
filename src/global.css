@@ -34,13 +34,13 @@ input:invalid,
     overflow: hidden;
 }
 
-.iconContainer {
+.cancelButtonContainer {
     position: absolute;
-    top: 5%;
-    right: 5%;
+    top: 4%;
+    right: 4%;
 }
 
-.iconContainer:hover {
+.cancelButtonContainer:hover {
     cursor: pointer;
 }
 

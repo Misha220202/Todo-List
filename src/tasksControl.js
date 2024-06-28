@@ -1,7 +1,8 @@
 import { format, addDays } from 'date-fns';
+import { tasksControlPanel, removeChosenFromClasslist } from './removeChosenFromClasslist.js';
 import { classFindParentContainer, idFindParentContainer } from './findParentContainer.js';
 
-class Task {
+export class Task {
     constructor(title, description, dueDateFormatted, checkStatus, recurringCycle = 0, importance = 'notImportant') {
         this.title = title;
         this.description = description;
@@ -22,7 +23,7 @@ class Task {
     updateDueDateFormatted() {
         if (this.recurringCycle > 0) {
             const newDueDate = this.dueDate;
-            if (this.recurringCycle === 30) { // Monthly
+            if (this.recurringCycle == 30) { // Monthly
                 newDueDate.setMonth(newDueDate.getMonth() + 1);
             } else {
                 newDueDate.setDate(newDueDate.getDate() + this.recurringCycle);
@@ -32,16 +33,17 @@ class Task {
     }
 
     updateCheckStatus() {
-        if (this.recurringCycle > 0) {
+        const today = new Date(new Date().setHours(0, 0, 0, 0));
+        if (this.recurringCycle > 0 && today > this.dueDate) {
             this.checkStatus = 'notChecked';
         }
     }
 
     checkAndUpdate() {
-        const today = new Date().setHours(0, 0, 0, 0);
+        const today = new Date(new Date().setHours(0, 0, 0, 0));
         if (this.recurringCycle > 0 && today > this.dueDate) {
-            this.updateDueDateFormatted();
             this.updateCheckStatus();
+            this.updateDueDateFormatted();
         }
     }
 }
@@ -52,22 +54,18 @@ const tasksArr = tasksArrJson ? JSON.parse(tasksArrJson).map(taskObj => new Task
 export const initiateTaskArr = () => {
     if (!tasksArrJson) {
         const currentDateFormatted = format(new Date().setHours(0, 0, 0, 0), 'yyyy-MM-dd');
-        const initialTask1 = new Task('Welcome to the "todo-List"', 'Organize your work and life, finally.', currentDateFormatted, 'notChecked');
+        const initialTask1 = new Task('Welcome to the "ToDo-List"', 'Organize your work and life, finally.', currentDateFormatted, 'notChecked');
         const initialTask2 = new Task('Create your first task', 'Clicking "add task" to start.', currentDateFormatted, 'notChecked', 0, 'important');
-        const initialTask3 = new Task('Create your first project', 'Use "Quick Start Templates" to create your first project.', currentDateFormatted, 'notChecked');
-        tasksArr.push(initialTask1, initialTask2, initialTask3);
+        tasksArr.push(initialTask1, initialTask2);
         localStorage.setItem('tasksArr', JSON.stringify(tasksArr));
     }
 };
 initiateTaskArr();
 
-const contentContainer = document.querySelector('.contentContainer');
-
 class TaskListNodeManager {
     constructor(element) {
         this.element = element;
-        this.controlPanelContainer = document.querySelector('.sidebar>.tasks');
-        this.titles = ['Today', 'Tomorrow', 'Day-3', 'Day-4', 'Day-5', 'Day-6', 'Days-7', 'Future', 'Important', 'Overdue', 'Completed'];
+        this.groupNames = ['Today', 'Tomorrow', 'Day-3', 'Day-4', 'Day-5', 'Day-6', 'Days-7', 'Future', 'Important', 'Overdue', 'Completed'];
         this.initDates();
     }
 
@@ -81,35 +79,31 @@ class TaskListNodeManager {
         }
     }
 
-    filterTasksByDate(date) {
-        return tasksArr.filter(task => task.dueDateFormatted == date && task.checkStatus == 'notChecked');
-    }
-
     groups() {
         const groups = [];
         for (let i = 0; i < 7; i++) {
-            const title = this.titles[i];
+            const groupName = this.groupNames[i];
             const formattedDate = this[`day${i + 1}Formatted`];
-            const tasks = this.filterTasksByDate(formattedDate);
-            groups.push({ title, tasks, date: formattedDate });
+            const tasks = tasksArr.filter(task => task.dueDateFormatted == formattedDate && task.checkStatus == 'notChecked');
+            groups.push({ groupName, tasks, date: formattedDate });
         }
 
         const futureTasks = tasksArr.filter(task => task.dueDate > this[`day7`] && task.checkStatus == 'notChecked');
-        groups.push({ title: 'Future', tasks: futureTasks, date: `After ${this[`day${7}Formatted`]}` });
+        groups.push({ groupName: 'Future', tasks: futureTasks, date: `After ${this[`day${7}Formatted`]}` });
 
-        const importantTasks = tasksArr.filter(task => task.importance == 'important' && task.checkStatus == 'notChecked');
-        groups.push({ title: 'Important', tasks: importantTasks, date: `` });
+        const importantTasks = tasksArr.filter(task => task.importance == 'important' && task.dueDate >= this[`day1`] && task.checkStatus == 'notChecked');
+        groups.push({ groupName: 'Important', tasks: importantTasks, date: `` });
 
         const overdueTasks = tasksArr.filter(task => task.dueDate < this[`day1`] && task.checkStatus == 'notChecked' && task.recurringCycle == 0);
-        groups.push({ title: 'OverDue', tasks: overdueTasks, date: `` });
+        groups.push({ groupName: 'OverDue', tasks: overdueTasks, date: `` });
 
-        const completedTasks = tasksArr.filter(task => task.checkStatus == 'checked' && task.recurringCycle == 0);
-        groups.push({ title: 'Completed', tasks: completedTasks, date: `` });
+        const completedTasks = tasksArr.filter(task => task.checkStatus == 'checked');
+        groups.push({ groupName: 'Completed', tasks: completedTasks, date: `` });
 
         return groups;
     }
 
-    createNode(task) {
+    createTaskNode(task) {
         const taskNode = document.createElement('div');
         taskNode.classList.add('task', `${task.checkStatus}`, `${task.importance}`);
         taskNode.setAttribute('id', `${task.id}`);
@@ -146,6 +140,12 @@ class TaskListNodeManager {
                 <button class="cancel">Cancel</button>
             </div>`;
 
+        const dueDateNode = taskNode.querySelector('.dueDate');
+        const today = new Date(new Date().setHours(0, 0, 0, 0));
+        if (today > task.dueDate) {
+            dueDateNode.style.background = 'red'
+        }
+
         const recurringCycleNode = taskNode.querySelector('.recurringCycle');
         if (task.recurringCycle == 0) {
             recurringCycleNode.classList.add('hidden');
@@ -159,7 +159,7 @@ class TaskListNodeManager {
         iconButtonContainer.addEventListener('click', event => {
             const findIndexById = (arr, id) => {
                 for (let i = 0; i < arr.length; i++) {
-                    if (arr[i].id === id) {
+                    if (arr[i].id == id) {
                         return i;
                     }
                 }
@@ -186,14 +186,14 @@ class TaskListNodeManager {
 
         groups.forEach(group => {
             const groupNode = document.createElement('div');
-            groupNode.classList.add(`${group.title}`, 'hidden');
+            groupNode.classList.add(`${group.groupName}`, 'hidden');
             groupNode.innerHTML = `
                 <div class="titleBar">
-                    <h2>${group.title}</h2>
+                    <h2>${group.groupName}</h2>
                     <p>${group.date}</p>
                 </div>`;
 
-            if (group.title == 'OverDue') {
+            if (group.groupName == 'OverDue') {
                 const button = document.createElement('button');
                 button.textContent = 'Reschedule';
                 button.classList.add('reschedule');
@@ -205,11 +205,10 @@ class TaskListNodeManager {
             }
 
             group.tasks.forEach(task => {
-                const taskNode = this.createNode(task);
+                const taskNode = this.createTaskNode(task);
                 this.activateTaskNodeButtonFunctions(taskNode);
                 groupNode.appendChild(taskNode);
             });
-
             this.element.appendChild(groupNode);
         });
     }
@@ -217,7 +216,7 @@ class TaskListNodeManager {
     showDomNodes() {
         //contentContainer NodeList ['Today', 'Tomorrow', 'Day-3', 'Day-4', 'Day-5', 'Day-6', 'Days-7', 'Future', 'Important', 'Overdue', 'Completed'];
         //controlPanel NodeList ['addTask', 'today', 'nextSevenDays', 'allTasks', 'important', 'overdue', 'completed']
-        const activePanel = Array.from(this.controlPanelContainer.children).find(panel => panel.classList.contains('chosen'));
+        const activePanel = Array.from(tasksControlPanel.children).find(panel => panel.classList.contains('chosen'));
         const id = activePanel.id;
         const children = this.element.children;
         if (id == 'today' && children[0].children[1]) {
@@ -260,7 +259,7 @@ class TaskListNodeManager {
     }
 
     edit(taskNode, index) {
-        const iconButtonContainers = contentContainer.querySelectorAll('.iconButtonContainer');
+        const iconButtonContainers = this.element.querySelectorAll('.iconButtonContainer');
         taskNode.classList.add('contentEditable');
         const buttonContainer = taskNode.querySelector('.buttonContainer');
         const submit = taskNode.querySelector('.submit');
@@ -269,6 +268,7 @@ class TaskListNodeManager {
 
         const titleBeingEdited = contents[0];
         titleBeingEdited.setAttribute('contentEditable', true);
+        setTimeout(() => titleBeingEdited.focus(), 0);
 
         const descriptionBeingEdited = contents[1];
         descriptionBeingEdited.setAttribute('contentEditable', true);
@@ -315,34 +315,24 @@ class TaskListNodeManager {
 
     toggleCheckStatus(index) {
         const toggledTask = tasksArr[index];
-        if (toggledTask.checkStatus == 'checked') {
-            toggledTask.checkStatus = 'notChecked';
-        } else {
-            toggledTask.checkStatus = 'checked';
-        }
+        toggledTask.checkStatus = toggledTask.checkStatus === 'checked' ? 'notChecked' : 'checked';
         this.update();
     }
 
     toggleImportance(index) {
         const toggledTask = tasksArr[index];
-        if (toggledTask.importance == 'important') {
-            toggledTask.importance = 'notImportant';
-        } else {
-            toggledTask.importance = 'important';
-        }
+        toggledTask.importance = toggledTask.importance === 'important' ? 'notImportant' : 'important';
         this.update();
     }
 }
 
+const contentContainer = document.querySelector('.contentContainer');
 export const taskManager = new TaskListNodeManager(contentContainer);
 
 export const tasksControl = () => {
-    taskManager.buildSkeleton();
-    taskManager.showDomNodes();
-    const tasksPanel = document.querySelector('.sidebar>.tasks');
-    tasksPanel.addEventListener('click', (event) => {
+    taskManager.update();
+    tasksControlPanel.addEventListener('click', event => {
         const target = event.target;
-        const addTaskDiv = document.querySelector('.addTask');
         const todayDiv = document.querySelector('#today');
         const nextSevenDaysDiv = document.querySelector('#nextSevenDays');
         const allTasksDiv = document.querySelector('#allTasks');
@@ -381,8 +371,8 @@ export const tasksControl = () => {
                 <div>
                     <button type="submit">Submit</button>
                 </div>
-                <div class="iconContainer">
-                    <img class="iconButton cancel" src="${cancelUrl}" alt="cancel">
+                <div class="cancelButtonContainer">
+                    <img class="cancel" src="${cancelUrl}" alt="cancel">
                 </div>
             </form>`;
             const body = document.body;
@@ -444,41 +434,22 @@ export const tasksControl = () => {
             })
         }
 
-        const removeChosenFromClasslist = () => {
-            todayDiv.classList.remove('chosen');
-            nextSevenDaysDiv.classList.remove('chosen');
-            allTasksDiv.classList.remove('chosen');
-            importantDiv.classList.remove('chosen');
-            overdueDiv.classList.remove('chosen');
-            completedDiv.classList.remove('chosen');
-        }
+        const tasksControlPanelIdList = ['today', 'nextSevenDays', 'allTasks', 'important', 'overdue', 'completed'];
 
         if (classFindParentContainer(target, 'addTask')) {
-            addTask();
-        } else if (idFindParentContainer(target, 'today')) {
-            removeChosenFromClasslist();
-            todayDiv.classList.add('chosen');
-            taskManager.update();
-        } else if (idFindParentContainer(target, 'nextSevenDays')) {
-            removeChosenFromClasslist();
-            nextSevenDaysDiv.classList.add('chosen');
-            taskManager.update();
-        } else if (idFindParentContainer(target, 'allTasks')) {
             removeChosenFromClasslist();
             allTasksDiv.classList.add('chosen');
+            addTask();
             taskManager.update();
-        } else if (idFindParentContainer(target, 'important')) {
-            removeChosenFromClasslist();
-            importantDiv.classList.add('chosen');
-            taskManager.update();
-        } else if (idFindParentContainer(target, 'overdue')) {
-            removeChosenFromClasslist();
-            overdueDiv.classList.add('chosen');
-            taskManager.update();
-        } else if (idFindParentContainer(target, 'completed')) {
-            removeChosenFromClasslist();
-            completedDiv.classList.add('chosen');
-            taskManager.update();
+        } else {
+            tasksControlPanelIdList.forEach(id => {
+                const taskDiv = idFindParentContainer(target, id);
+                if (taskDiv) {
+                    removeChosenFromClasslist();
+                    taskDiv.classList.add('chosen');
+                    taskManager.update();
+                }
+            })
         }
     })
 }
