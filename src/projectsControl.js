@@ -44,18 +44,33 @@ class Project {
 }
 
 const projectsArrJson = localStorage.getItem('projectsArr');
-const projectsArr = projectsArrJson ? JSON.parse(projectsArrJson).map(projectObj => new Project(
-    projectObj.title,
-    projectObj.projectTasksArr.map(projectTaskObj => new ProjectTask(
-        projectTaskObj.title,
-        projectTaskObj.description,
-        projectTaskObj.dueDateFormatted,
-        projectTaskObj.checkStatus,
-        projectTaskObj.recurringCycle,
-        projectTaskObj.importance,
-        projectTaskObj.groupName
-    ))
-)) : [];
+const getProjectsArr = () => {
+    const projectsArr = projectsArrJson ? JSON.parse(projectsArrJson).map(projectObj => new Project(
+        projectObj.title,
+        projectObj.projectTasksArr.map(projectTaskObj => new ProjectTask(
+            projectTaskObj.title,
+            projectTaskObj.description,
+            projectTaskObj.dueDateFormatted,
+            projectTaskObj.checkStatus,
+            projectTaskObj.recurringCycle,
+            projectTaskObj.importance,
+            projectTaskObj.groupName
+        ))
+    )) : [];
+    return projectsArr
+}
+// const projectsArr = projectsArrJson ? JSON.parse(projectsArrJson).map(projectObj => new Project(
+//     projectObj.title,
+//     projectObj.projectTasksArr.map(projectTaskObj => new ProjectTask(
+//         projectTaskObj.title,
+//         projectTaskObj.description,
+//         projectTaskObj.dueDateFormatted,
+//         projectTaskObj.checkStatus,
+//         projectTaskObj.recurringCycle,
+//         projectTaskObj.importance,
+//         projectTaskObj.groupName
+//     ))
+// )) : [];
 
 export const initiateProjectsArr = () => {
     if (!projectsArrJson) {
@@ -498,6 +513,7 @@ export const projectsControl = () => {
                     projectsArr[index].title = projectTitleBeingEdited.textContent;
                     localStorage.setItem('projectsArr', JSON.stringify(projectsArr));
                     updateProjectsControlPanel();
+                    projectManger.update();
                 }
 
                 document.removeEventListener('click', handleDocumentClick);
