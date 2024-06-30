@@ -126,7 +126,7 @@ eval("\n\n/* istanbul ignore next  */\nfunction styleTagTransform(css, styleElem
   \**********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _index_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./index.css */ \"./src/index.css\");\n\n\nconst local = document.querySelector('#local');\nconst cloud = document.querySelector('#cloud');\n\nif (local) {\n    local.addEventListener('click', () => window.location.href = './app.html')\n}\n\nif (cloud) {\n    cloud.addEventListener('click', () => window.location.href = './login.html')\n}\n\n//# sourceURL=webpack://todo-list/./src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _index_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./index.css */ \"./src/index.css\");\n\n\nconst local = document.querySelector('#local');\nconst cloud = document.querySelector('#cloud');\n\nif (local) {\n  local.addEventListener('click', () => (window.location.href = './app.html'));\n}\n\nif (cloud) {\n  cloud.addEventListener(\n    'click',\n    () => (window.location.href = './login.html')\n  );\n}\n\n\n//# sourceURL=webpack://todo-list/./src/index.js?");
 
 /***/ })
 
