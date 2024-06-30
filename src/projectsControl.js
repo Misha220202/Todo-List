@@ -1,12 +1,12 @@
 import { currentTimeFormatted, currentDate, currentDateFormatted, nextSundayFormatted } from './time.js';
 import { ProjectTask, Project } from './basicClass.js';
-import { createGroceryListTemplate } from './GroceryListTemplate.js';
+import { GroceryListTemplate } from './GroceryListTemplate.js';
 import { ReadingListTemplate } from './ReadingListTemplate.js';
 import { WeeklyReviewTemplate } from './WeeklyReviewTemplate.js';
 import { projectsControlPanel, removeChosenFromClasslist } from './removeChosenFromClasslist.js';
 import { idFindParentContainer } from './findParentContainer.js';
 
-const templatesArr = [WeeklyReviewTemplate, createGroceryListTemplate(), ReadingListTemplate];
+const templatesArr = [WeeklyReviewTemplate, GroceryListTemplate, ReadingListTemplate];
 const templateIdList = [];
 templatesArr.forEach(template => templateIdList.push(template.title.replace(/\s/g, "")));
 
@@ -483,6 +483,7 @@ export const projectsControl = () => {
                 index = getIndex();
                 if (index !== -1) {
                     projectsArr[index].title = projectTitleBeingEdited.textContent;
+                    projectDiv.id = projectsArr[index].id;
                     localStorage.setItem('projectsArr', JSON.stringify(projectsArr));
                     updateProjectsControlPanel();
                     projectManger.update();
@@ -574,7 +575,8 @@ export const projectsControl = () => {
             const templateDiv = idFindParentContainer(target, id);
             if (templateDiv) {
                 const template = templatesArr.find(template => template.title.replace(/\s/g, "") == id);
-                const project = createGroceryListTemplate();
+                const _ = require('lodash');
+                const project = _.cloneDeep(template);
                 project.title = 'My ' + project.title;
                 project.timeCreated = currentTimeFormatted();
                 addProject(project);

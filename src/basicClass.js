@@ -30,10 +30,9 @@ export class Task {
             if (this.recurringCycle == 30) { // Monthly
                 newDueDate.setMonth(newDueDate.getMonth() + 1);
             } else {
-                newDueDate.setDate(newDueDate.getDate() + this.recurringCycle);
-            }
-            if (newDueDate < currentDate()) {
-                this.updateDueDateFormatted();
+                while (newDueDate < currentDate()) {
+                    newDueDate.setDate(newDueDate.getDate() + this.recurringCycle);
+                }
             }
             this.dueDateFormatted = format(newDueDate, 'yyyy-MM-dd');
         }
