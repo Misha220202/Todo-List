@@ -1,9 +1,4 @@
-class User {
-    constructor(username, profileUrl) {
-        this.username = username;
-        this.profileUrl = profileUrl;
-    }
-}
+import { User } from './basicClass.js';
 
 const userJson = localStorage.getItem('user');
 const userObj = JSON.parse(userJson);
@@ -91,7 +86,7 @@ export const settingsControl = () => {
                     try {
                         user.profileUrl = await handleFileRead(profileInput.files[0]);
                     } catch (error) {
-                        console.error("读取文件时出错：", error);
+                        console.error("Error reading file:", error);
                     }
                 }
                 setUser();

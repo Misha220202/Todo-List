@@ -1,87 +1,36 @@
-import { format, compareAsc, nextSunday, isSunday } from 'date-fns';
-import { Task } from './tasksControl.js';
-import { finishedTasksCount } from './finishedTasksCount.js';
+import { format, nextSunday, isSunday } from 'date-fns';
+import { currentDate, currentDateFormatted } from './time.js';
+import { ProjectTask, Project } from './basicClass.js';
+import { GroceryList } from './GroceryList.js';
 import { projectsControlPanel, removeChosenFromClasslist } from './removeChosenFromClasslist.js';
 import { idFindParentContainer } from './findParentContainer.js';
 
-class ProjectTask extends Task {
-    constructor(title, description, dueDateFormatted, checkStatus, recurringCycle = 0, importance = 'notImportant', groupName = '') {
-        super(title, description, dueDateFormatted, checkStatus, recurringCycle, importance);
-        this.groupName = groupName;
-    }
-}
-
-class Project {
-    constructor(title, projectTasksArr = []) {
-        this.title = title;
-        this.projectTasksArr = projectTasksArr;
-        this.dateCreated = new Date();
-    }
-
-    get id() {
-        return this.title + this.dateCreated;
-    }
-
-    get finishedProjectTasksCount() {
-        return finishedTasksCount(this.projectTasksArr);
-    }
-
-    get groupNames() {
-        const groupNames = new Set(this.projectTasksArr.map(projectTask => projectTask.groupName));
-        return Array.from(groupNames);
-    }
-
-    get groups() {
-        const groups = [];
-        this.groupNames.forEach(groupName => {
-            const projectTasks = this.projectTasksArr.filter(projectTasks => projectTasks.groupName == groupName);
-            projectTasks.sort((a, b) => compareAsc(a.dueDate, b.dueDate));
-            const groupTasksCount = finishedTasksCount(projectTasks);
-            groups.push({ groupName, projectTasks, groupTasksCount });
-        })
-        return groups;
-    }
-}
-
+console.log(GroceryList)
 const projectsArrJson = localStorage.getItem('projectsArr');
-const getProjectsArr = () => {
-    const projectsArr = projectsArrJson ? JSON.parse(projectsArrJson).map(projectObj => new Project(
-        projectObj.title,
-        projectObj.projectTasksArr.map(projectTaskObj => new ProjectTask(
-            projectTaskObj.title,
-            projectTaskObj.description,
-            projectTaskObj.dueDateFormatted,
-            projectTaskObj.checkStatus,
-            projectTaskObj.recurringCycle,
-            projectTaskObj.importance,
-            projectTaskObj.groupName
-        ))
-    )) : [];
-    return projectsArr
-}
-// const projectsArr = projectsArrJson ? JSON.parse(projectsArrJson).map(projectObj => new Project(
-//     projectObj.title,
-//     projectObj.projectTasksArr.map(projectTaskObj => new ProjectTask(
-//         projectTaskObj.title,
-//         projectTaskObj.description,
-//         projectTaskObj.dueDateFormatted,
-//         projectTaskObj.checkStatus,
-//         projectTaskObj.recurringCycle,
-//         projectTaskObj.importance,
-//         projectTaskObj.groupName
-//     ))
-// )) : [];
+
+const projectsArr = projectsArrJson ? JSON.parse(projectsArrJson).map(projectObj => new Project(
+    projectObj.title,
+    projectObj.defaultGroupNames,
+    projectObj.projectTasksArr.map(projectTaskObj => new ProjectTask(
+        projectTaskObj.title,
+        projectTaskObj.description,
+        projectTaskObj.dueDateFormatted,
+        projectTaskObj.checkStatus,
+        projectTaskObj.recurringCycle,
+        projectTaskObj.importance,
+        projectTaskObj.groupName
+    )),
+    projectObj.dateCreatedS
+)) : [];
 
 export const initiateProjectsArr = () => {
     if (!projectsArrJson) {
-        const currentDate = new Date(new Date().setHours(0, 0, 0, 0));
-        const currentDateFormatted = format(currentDate, 'yyyy-MM-dd');
         const nextSundayFormatted = isSunday(currentDate) ? currentDateFormatted : format(nextSunday(currentDate), 'yyyy-MM-dd');
-        const initialProjectTask1 = new ProjectTask('Weekly Review', 'Do a weekly review of my tasks and goals', nextSundayFormatted, 'notChecked', 7, 'important', 'Routines');
-        const initialProjectTask2 = new ProjectTask('Add more personal routines', 'e.g.: pay taxes yearly, empty the bins weekly, meditate for 10 mins ev weekday at 9am', currentDateFormatted, 'notChecked', 7, 'notImportant', 'Routines');
+        const initialProjectTask1 = new ProjectTask('Weekly Review', 'Do a weekly review of my tasks and goals on Sunday.', nextSundayFormatted, 'notChecked', 7, 'important', 'Routines');
+        const initialProjectTask2 = new ProjectTask('Add more personal routines', 'e.g.: pay taxes yearly, empty the bins weekly, meditate for 10 mins ev weekday at 9am.', currentDateFormatted, 'notChecked', 7, 'notImportant', 'Routines');
         const initialProjectTask3 = new ProjectTask('Create your first project', 'Use "Quick Start Templates" to create your first project.', currentDateFormatted, 'notChecked', 0, 'notImportant', 'Inspiration');
 
-        const home = new Project('Home', [initialProjectTask1, initialProjectTask2, initialProjectTask3]);
+        const home = new Project('Home', '', [initialProjectTask1, initialProjectTask2, initialProjectTask3]);
         projectsArr.push(home);
         localStorage.setItem('projectsArr', JSON.stringify(projectsArr));
     }
@@ -95,8 +44,12 @@ class ProjectsNodeManager {
 
     get project() {
         const activePanel = Array.from(projectsControlPanel.children).find(panel => panel.classList.contains('chosen'));
-        const id = activePanel.id;
-        return projectsArr.find(project => project.id == id);
+        if (activePanel) {
+            const id = activePanel.id;
+            return projectsArr.find(project => project.id == id);
+        } else {
+            return projectsArr[projectsArr.length - 1];
+        }
     }
 
     createProjectTaskNode(projectTask) {
@@ -127,7 +80,7 @@ class ProjectsNodeManager {
             </p>
             <p class="dueDate">
                 <span class="tag">DueDate:</span>
-                <span class="content">${projectTask.dueDateFormatted}</span>
+                <span class="content">${projectTask.dueDateFormatted2}</span>
             </p>
             <p class="recurringCycle">
                 <span class="tag">RecurringCycle: </span>
@@ -141,10 +94,14 @@ class ProjectsNodeManager {
         const rescheduleButton = projectTaskNode.querySelector('.rescheduleButton');
         rescheduleButton.style.display = projectTask.recurringCycle == 0 ? 'block' : 'none';
 
+        const descriptionNode = projectTaskNode.querySelector('.description');
+        descriptionNode.style.display = projectTask.description == '' ? 'none' : 'block';
+
         const dueDateNode = projectTaskNode.querySelector('.dueDate');
-        const today = new Date(new Date().setHours(0, 0, 0, 0));
-        if (today > projectTask.dueDate) {
-            dueDateNode.style.background = 'red'
+        if (currentDate > projectTask.dueDate) {
+            dueDateNode.style.background = 'red';
+        } else {
+            dueDateNode.style.background = 'lightGreen';
         }
 
         const recurringCycleNode = projectTaskNode.querySelector('.recurringCycle');
@@ -203,7 +160,7 @@ class ProjectsNodeManager {
         const groups = project.groups;
         groups.forEach(group => {
             const groupNode = document.createElement('div');
-            groupNode.classList.add(`${group.groupName}`);
+            // groupNode.classList.add(`${group.groupName}`);
             groupNode.innerHTML = `
                 <div class="titleBar">
                     <h2>${group.groupName}</h2>
@@ -375,11 +332,10 @@ class ProjectsNodeManager {
 
 
     reschedule(index) {
-        const today = new Date(new Date().setHours(0, 0, 0, 0));
         const projectTasksArr = this.project.projectTasksArr;
-        if (projectTasksArr[index].dueDate < today) {
+        if (projectTasksArr[index].dueDate < currentDate) {
             projectTasksArr[index].checkStatus = 'notChecked';
-            projectTasksArr[index].dueDateFormatted = format(today, 'yyyy-MM-dd');
+            projectTasksArr[index].dueDateFormatted = currentDateFormatted;
         }
         this.update();
     }
@@ -482,6 +438,9 @@ export const projectsControl = () => {
     }
 
     const activateProjectDivButtonFunctions = projectDiv => {
+        const addProject = projectsControlPanel.querySelector('.addProject');
+        addProject.style.display = 'block';
+
         const iconButtonContainer = projectDiv.querySelector('.iconButtonContainer');
         const editButton = iconButtonContainer.children[0];
         const deleteButton = iconButtonContainer.children[1];
@@ -535,6 +494,7 @@ export const projectsControl = () => {
 
         if (projectDiv.id == projectsArr[index].dateCreated) {
             setTimeout(() => {
+                addProject.style.display = 'none';
                 chevronButton.click();
                 editButton.click();
                 projectTitleBeingEdited.focus();
@@ -569,20 +529,20 @@ export const projectsControl = () => {
     }
     updateProjectsControlPanel();
 
+    const addProject = (project) => {
+        projectsArr.push(project);
+        localStorage.setItem('projectsArr', JSON.stringify(projectsArr));
+        updateProjectsControlPanel();
+    }
+
     projectsControlPanel.addEventListener('click', event => {
         const target = event.target;
 
-        const addProject = () => {
-            const project = new Project('');
-            projectsArr.push(project);
-            localStorage.setItem('projectsArr', JSON.stringify(projectsArr));
-            updateProjectsControlPanel();
-        }
         const projectIdList = [];
         projectsArr.forEach(project => projectIdList.push(project.id));
 
         if (target.classList.contains('addProject')) {
-            addProject();
+            addProject(new Project(''));
         } else {
             projectIdList.forEach(id => {
                 const projectDiv = idFindParentContainer(target, id);
@@ -594,4 +554,9 @@ export const projectsControl = () => {
             })
         }
     })
+
+    // const templatesPanel = document.querySelector('.sidebar>.templates');
+    // templatesPanel.addEventListener('click', event => {
+    //     const target = event.target;
+    // })
 }

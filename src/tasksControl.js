@@ -1,59 +1,14 @@
 import { format, addDays } from 'date-fns';
+import { currentDate, currentDateFormatted } from './time.js';
+import { Task } from './basicClass.js';
 import { tasksControlPanel, removeChosenFromClasslist } from './removeChosenFromClasslist.js';
 import { classFindParentContainer, idFindParentContainer } from './findParentContainer.js';
-
-export class Task {
-    constructor(title, description, dueDateFormatted, checkStatus, recurringCycle = 0, importance = 'notImportant') {
-        this.title = title;
-        this.description = description;
-        this.dueDateFormatted = dueDateFormatted;//"YYYY-MM-DD"
-        this.checkStatus = checkStatus;
-        this.recurringCycle = recurringCycle;//in Days
-        this.importance = importance;
-    }
-
-    get dueDate() {
-        return new Date(this.dueDateFormatted + 'T00:00:00');
-    }
-
-    get id() {
-        return (this.title + this.description + this.dueDateFormatted).replace(/\s/g, "");
-    }
-
-    updateDueDateFormatted() {
-        if (this.recurringCycle > 0) {
-            const newDueDate = this.dueDate;
-            if (this.recurringCycle == 30) { // Monthly
-                newDueDate.setMonth(newDueDate.getMonth() + 1);
-            } else {
-                newDueDate.setDate(newDueDate.getDate() + this.recurringCycle);
-            }
-            this.dueDateFormatted = format(newDueDate, 'yyyy-MM-dd');
-        }
-    }
-
-    updateCheckStatus() {
-        const today = new Date(new Date().setHours(0, 0, 0, 0));
-        if (this.recurringCycle > 0 && today > this.dueDate) {
-            this.checkStatus = 'notChecked';
-        }
-    }
-
-    checkAndUpdate() {
-        const today = new Date(new Date().setHours(0, 0, 0, 0));
-        if (this.recurringCycle > 0 && today > this.dueDate) {
-            this.updateCheckStatus();
-            this.updateDueDateFormatted();
-        }
-    }
-}
 
 const tasksArrJson = localStorage.getItem('tasksArr');
 const tasksArr = tasksArrJson ? JSON.parse(tasksArrJson).map(taskObj => new Task(taskObj.title, taskObj.description, taskObj.dueDateFormatted, taskObj.checkStatus, Number(taskObj.recurringCycle), taskObj.importance)) : [];
 
 export const initiateTaskArr = () => {
     if (!tasksArrJson) {
-        const currentDateFormatted = format(new Date().setHours(0, 0, 0, 0), 'yyyy-MM-dd');
         const initialTask1 = new Task('Welcome to the "ToDo-List"', 'Organize your work and life, finally.', currentDateFormatted, 'notChecked');
         const initialTask2 = new Task('Create your first task', 'Clicking "add task" to start.', currentDateFormatted, 'notChecked', 0, 'important');
         tasksArr.push(initialTask1, initialTask2);
@@ -70,10 +25,8 @@ class TaskListNodeManager {
     }
 
     initDates() {
-        const today = new Date(new Date().setHours(0, 0, 0, 0));
-
         for (let i = 0; i < 7; i++) {
-            const currentDay = addDays(today, i);
+            const currentDay = addDays(currentDate, i);
             this[`day${i + 1}`] = currentDay;
             this[`day${i + 1}Formatted`] = format(currentDay, 'yyyy-MM-dd');
         }
@@ -129,7 +82,7 @@ class TaskListNodeManager {
             </p>
             <p class="dueDate">
                 <span class="tag">DueDate:</span>
-                <span class="content">${task.dueDateFormatted}</span>
+                <span class="content">${task.dueDateFormatted2}</span>
             </p>
             <p class="recurringCycle">
                 <span class="tag">RecurringCycle: </span>
@@ -141,9 +94,10 @@ class TaskListNodeManager {
             </div>`;
 
         const dueDateNode = taskNode.querySelector('.dueDate');
-        const today = new Date(new Date().setHours(0, 0, 0, 0));
-        if (today > task.dueDate) {
-            dueDateNode.style.background = 'red'
+        if (currentDate > task.dueDate) {
+            dueDateNode.style.background = 'red';
+        } else {
+            dueDateNode.style.background = 'lightGreen';
         }
 
         const recurringCycleNode = taskNode.querySelector('.recurringCycle');

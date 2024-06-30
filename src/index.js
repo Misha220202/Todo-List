@@ -1,4 +1,4 @@
-import './index.css'
+import './index.css';
 
 const local = document.querySelector('#local');
 const cloud = document.querySelector('#cloud');
