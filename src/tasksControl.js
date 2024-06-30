@@ -172,7 +172,7 @@ class TaskListNodeManager {
     if (task.checkStatus == 'checked') {
       dueDateNode.style.background = '';
       taskNode.style.background =
-        'linear-gradient(to top, var(--color-liner-background) 3px, lightGreen 3px)';
+        'linear-gradient(to top, var(--color-liner-background) 3px, yellowgreen 3px)';
     }
 
     return taskNode;
