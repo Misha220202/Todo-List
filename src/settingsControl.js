@@ -2,7 +2,14 @@ import { User } from './basicClass.js';
 
 const userJson = localStorage.getItem('user');
 const userObj = JSON.parse(userJson);
-let user = userObj ? new User(userObj.username, userObj.profileUrl) : null;
+let user = userObj
+  ? new User(
+      userObj.username,
+      userObj.profileUrl,
+      userObj.tasksArr,
+      userObj.projectsArr
+    )
+  : null;
 const userNode = document.querySelector('.user');
 
 const setUser = () => {
@@ -48,6 +55,8 @@ export const settingsControl = () => {
     const id = target.id;
     if (id == 'darkMode') {
       document.body.classList.toggle('darkMode');
+      target.textContent =
+        target.textContent == 'Dark Mode' ? 'Light Mode' : 'Dark Mode';
     } else if (id == 'setProfile') {
       const dialog = document.createElement('dialog');
       dialog.classList.add('setProfileDialog');

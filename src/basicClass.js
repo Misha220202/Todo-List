@@ -129,8 +129,10 @@ export class Project {
 }
 
 export class User {
-  constructor(username, profileUrl) {
+  constructor(username, profileUrl, tasksArr = [], projectsArr = []) {
     this.username = username;
     this.profileUrl = profileUrl;
+    this.tasksArr = tasksArr;
+    this.projectsArr = projectsArr;
   }
 }
