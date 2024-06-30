@@ -9,8 +9,8 @@ const tasksArr = tasksArrJson ? JSON.parse(tasksArrJson).map(taskObj => new Task
 
 export const initiateTaskArr = () => {
     if (!tasksArrJson) {
-        const initialTask1 = new Task('Welcome to the "ToDo-List"', 'Organize your work and life, finally.', currentDateFormatted, 'notChecked');
-        const initialTask2 = new Task('Create your first task', 'Clicking "add task" to start.', currentDateFormatted, 'notChecked', 0, 'important');
+        const initialTask1 = new Task('Welcome to the "ToDo-List"', 'Organize your work and life, finally.', currentDateFormatted(), 'notChecked');
+        const initialTask2 = new Task('Create your first task', 'Clicking "add task" to start.', currentDateFormatted(), 'notChecked', 0, 'important');
         tasksArr.push(initialTask1, initialTask2);
         localStorage.setItem('tasksArr', JSON.stringify(tasksArr));
     }
@@ -26,7 +26,7 @@ class TaskListNodeManager {
 
     initDates() {
         for (let i = 0; i < 7; i++) {
-            const currentDay = addDays(currentDate, i);
+            const currentDay = addDays(currentDate(), i);
             this[`day${i + 1}`] = currentDay;
             this[`day${i + 1}Formatted`] = format(currentDay, 'yyyy-MM-dd');
         }
@@ -94,15 +94,19 @@ class TaskListNodeManager {
             </div>`;
 
         const dueDateNode = taskNode.querySelector('.dueDate');
-        if (currentDate > task.dueDate) {
+        if (currentDate() > task.dueDate) {
             dueDateNode.style.background = 'red';
         } else {
-            dueDateNode.style.background = 'lightGreen';
+            dueDateNode.style.background = 'lightBlue';
         }
 
         const recurringCycleNode = taskNode.querySelector('.recurringCycle');
         if (task.recurringCycle == 0) {
             recurringCycleNode.classList.add('hidden');
+        }
+
+        if (task.checkStatus == 'checked') {
+            dueDateNode.style.background = 'lightGreen';
         }
 
         return taskNode;
@@ -287,12 +291,7 @@ export const tasksControl = () => {
     taskManager.update();
     tasksControlPanel.addEventListener('click', event => {
         const target = event.target;
-        const todayDiv = document.querySelector('#today');
-        const nextSevenDaysDiv = document.querySelector('#nextSevenDays');
         const allTasksDiv = document.querySelector('#allTasks');
-        const importantDiv = document.querySelector('#important');
-        const overdueDiv = document.querySelector('#overdue');
-        const completedDiv = document.querySelector('#completed');
 
         const addTask = () => {
             const dialog = document.createElement('dialog');
@@ -389,7 +388,6 @@ export const tasksControl = () => {
         }
 
         const tasksControlPanelIdList = ['today', 'nextSevenDays', 'allTasks', 'important', 'overdue', 'completed'];
-
         if (classFindParentContainer(target, 'addTask')) {
             removeChosenFromClasslist();
             allTasksDiv.classList.add('chosen');

@@ -5,6 +5,9 @@ import { tasksControl } from './tasksControl.js';
 import { projectsControl } from './projectsControl.js';
 
 startClock();
+
 settingsControl();
+
 tasksControl();
+
 projectsControl();

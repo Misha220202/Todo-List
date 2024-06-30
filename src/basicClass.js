@@ -1,5 +1,5 @@
 import { format, compareAsc } from 'date-fns';
-import { currentDate } from './time.js';
+import { currentDate, currentTimeFormatted } from './time.js';
 import { finishedTasksCount } from './finishedTasksCount.js';
 
 export class Task {
@@ -32,18 +32,21 @@ export class Task {
             } else {
                 newDueDate.setDate(newDueDate.getDate() + this.recurringCycle);
             }
+            if (newDueDate < currentDate()) {
+                this.updateDueDateFormatted();
+            }
             this.dueDateFormatted = format(newDueDate, 'yyyy-MM-dd');
         }
     }
 
     updateCheckStatus() {
-        if (this.recurringCycle > 0 && currentDate > this.dueDate) {
+        if (this.recurringCycle > 0 && currentDate() > this.dueDate) {
             this.checkStatus = 'notChecked';
         }
     }
 
     checkAndUpdate() {
-        if (this.recurringCycle > 0 && currentDate > this.dueDate) {
+        if (this.recurringCycle > 0 && currentDate() > this.dueDate) {
             this.updateCheckStatus();
             this.updateDueDateFormatted();
         }
@@ -62,11 +65,11 @@ export class Project {
         this.title = title;
         this.defaultGroupNames = defaultGroupNames;
         this.projectTasksArr = projectTasksArr;
-        this.dateCreated = currentDate;
+        this.timeCreated = currentTimeFormatted();
     }
 
     get id() {
-        return this.title + this.dateCreated;
+        return this.title + this.timeCreated;
     }
 
     get finishedProjectTasksCount() {

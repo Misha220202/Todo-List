@@ -1,13 +1,16 @@
-import { format, nextSunday, isSunday } from 'date-fns';
-import { currentDate, currentDateFormatted } from './time.js';
+import { currentTimeFormatted, currentDate, currentDateFormatted, nextSundayFormatted } from './time.js';
 import { ProjectTask, Project } from './basicClass.js';
-import { GroceryList } from './GroceryList.js';
+import { createGroceryListTemplate } from './GroceryListTemplate.js';
+import { ReadingListTemplate } from './ReadingListTemplate.js';
+import { WeeklyReviewTemplate } from './WeeklyReviewTemplate.js';
 import { projectsControlPanel, removeChosenFromClasslist } from './removeChosenFromClasslist.js';
 import { idFindParentContainer } from './findParentContainer.js';
 
-console.log(GroceryList)
-const projectsArrJson = localStorage.getItem('projectsArr');
+const templatesArr = [WeeklyReviewTemplate, createGroceryListTemplate(), ReadingListTemplate];
+const templateIdList = [];
+templatesArr.forEach(template => templateIdList.push(template.title.replace(/\s/g, "")));
 
+const projectsArrJson = localStorage.getItem('projectsArr');
 const projectsArr = projectsArrJson ? JSON.parse(projectsArrJson).map(projectObj => new Project(
     projectObj.title,
     projectObj.defaultGroupNames,
@@ -20,15 +23,14 @@ const projectsArr = projectsArrJson ? JSON.parse(projectsArrJson).map(projectObj
         projectTaskObj.importance,
         projectTaskObj.groupName
     )),
-    projectObj.dateCreatedS
+    projectObj.timeCreated,
 )) : [];
 
 export const initiateProjectsArr = () => {
     if (!projectsArrJson) {
-        const nextSundayFormatted = isSunday(currentDate) ? currentDateFormatted : format(nextSunday(currentDate), 'yyyy-MM-dd');
-        const initialProjectTask1 = new ProjectTask('Weekly Review', 'Do a weekly review of my tasks and goals on Sunday.', nextSundayFormatted, 'notChecked', 7, 'important', 'Routines');
-        const initialProjectTask2 = new ProjectTask('Add more personal routines', 'e.g.: pay taxes yearly, empty the bins weekly, meditate for 10 mins ev weekday at 9am.', currentDateFormatted, 'notChecked', 7, 'notImportant', 'Routines');
-        const initialProjectTask3 = new ProjectTask('Create your first project', 'Use "Quick Start Templates" to create your first project.', currentDateFormatted, 'notChecked', 0, 'notImportant', 'Inspiration');
+        const initialProjectTask1 = new ProjectTask('Weekly Review', 'Do a weekly review of my tasks and goals on Sunday.', nextSundayFormatted(), 'notChecked', 7, 'important', 'Routines');
+        const initialProjectTask2 = new ProjectTask('Add more personal routines', 'e.g.: pay taxes yearly, empty the bins weekly, meditate for 10 mins ev weekday at 9am.', currentDateFormatted(), 'notChecked', 7, 'notImportant', 'Routines');
+        const initialProjectTask3 = new ProjectTask('Create your first project', 'Use "Quick Start Templates" to create your first project.', currentDateFormatted(), 'notChecked', 0, 'notImportant', 'Inspiration');
 
         const home = new Project('Home', '', [initialProjectTask1, initialProjectTask2, initialProjectTask3]);
         projectsArr.push(home);
@@ -98,15 +100,19 @@ class ProjectsNodeManager {
         descriptionNode.style.display = projectTask.description == '' ? 'none' : 'block';
 
         const dueDateNode = projectTaskNode.querySelector('.dueDate');
-        if (currentDate > projectTask.dueDate) {
+        if (currentDate() > projectTask.dueDate) {
             dueDateNode.style.background = 'red';
         } else {
-            dueDateNode.style.background = 'lightGreen';
+            dueDateNode.style.background = 'lightBlue';
         }
 
         const recurringCycleNode = projectTaskNode.querySelector('.recurringCycle');
         if (projectTask.recurringCycle == 0) {
             recurringCycleNode.classList.add('hidden');
+        }
+
+        if (projectTask.checkStatus == 'checked') {
+            dueDateNode.style.background = 'lightGreen';
         }
 
         return projectTaskNode;
@@ -273,8 +279,8 @@ class ProjectsNodeManager {
                 parentNode.innerHTML = `
                 <label for="RecurringCycle">Recurring Cycle:</label>
                 <select id="RecurringCycle">
-                    <option value="1" selected>Daily</option>
-                    <option value="7">Weekly</option>
+                    <option value="1">Daily</option>
+                    <option value="7" selected>Weekly</option>
                     <option value="14">Bi-Weekly</option>
                     <option value="30">Monthly</option>
                 </select>`;
@@ -333,9 +339,9 @@ class ProjectsNodeManager {
 
     reschedule(index) {
         const projectTasksArr = this.project.projectTasksArr;
-        if (projectTasksArr[index].dueDate < currentDate) {
+        if (projectTasksArr[index].dueDate < currentDate()) {
             projectTasksArr[index].checkStatus = 'notChecked';
-            projectTasksArr[index].dueDateFormatted = currentDateFormatted;
+            projectTasksArr[index].dueDateFormatted = currentDate();
         }
         this.update();
     }
@@ -366,7 +372,6 @@ class ProjectsNodeManager {
         buttonContainer.classList.remove('hidden');
 
         submit.addEventListener('click', () => {
-
             contents.forEach(content => content.setAttribute('contentEditable', false));
 
             projectTasksArr[index].title = titleBeingEdited.textContent;
@@ -437,6 +442,13 @@ export const projectsControl = () => {
         return projectDiv;
     }
 
+    const autoClick = projectDiv => {
+        const iconButtonContainer = projectDiv.querySelector('.iconButtonContainer');
+        const editButton = iconButtonContainer.children[0];
+        const deleteButton = iconButtonContainer.children[1];
+        const chevronButton = iconButtonContainer.children[2];
+    }
+
     const activateProjectDivButtonFunctions = projectDiv => {
         const addProject = projectsControlPanel.querySelector('.addProject');
         addProject.style.display = 'block';
@@ -458,6 +470,7 @@ export const projectsControl = () => {
             projectsArr.splice(index, 1);
             localStorage.setItem('projectsArr', JSON.stringify(projectsArr));
             projectsControlPanel.removeChild(projectDiv);
+            location.reload();
         }
 
         const handleDocumentClick = event => {
@@ -492,7 +505,7 @@ export const projectsControl = () => {
             }
         });
 
-        if (projectDiv.id == projectsArr[index].dateCreated) {
+        if (projectDiv.id == projectsArr[index].timeCreated) {
             setTimeout(() => {
                 addProject.style.display = 'none';
                 chevronButton.click();
@@ -529,6 +542,7 @@ export const projectsControl = () => {
     }
     updateProjectsControlPanel();
 
+    const addProjectButton = projectsControlPanel.querySelector('.addProject');
     const addProject = (project) => {
         projectsArr.push(project);
         localStorage.setItem('projectsArr', JSON.stringify(projectsArr));
@@ -537,11 +551,9 @@ export const projectsControl = () => {
 
     projectsControlPanel.addEventListener('click', event => {
         const target = event.target;
-
         const projectIdList = [];
         projectsArr.forEach(project => projectIdList.push(project.id));
-
-        if (target.classList.contains('addProject')) {
+        if (target == addProjectButton) {
             addProject(new Project(''));
         } else {
             projectIdList.forEach(id => {
@@ -555,8 +567,20 @@ export const projectsControl = () => {
         }
     })
 
-    // const templatesPanel = document.querySelector('.sidebar>.templates');
-    // templatesPanel.addEventListener('click', event => {
-    //     const target = event.target;
-    // })
+    const templatesPanel = document.querySelector('.sidebar>.templates');
+    templatesPanel.addEventListener('click', event => {
+        const target = event.target;
+        templateIdList.forEach(id => {
+            const templateDiv = idFindParentContainer(target, id);
+            if (templateDiv) {
+                const template = templatesArr.find(template => template.title.replace(/\s/g, "") == id);
+                const project = createGroceryListTemplate();
+                project.title = 'My ' + project.title;
+                project.timeCreated = currentTimeFormatted();
+                addProject(project);
+                const projectDiv = projectsControlPanel.lastChild;
+                projectDiv.click();
+            }
+        })
+    })
 }
