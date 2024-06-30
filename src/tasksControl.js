@@ -82,7 +82,7 @@ class TaskListNodeManager {
             </p>
             <p class="dueDate">
                 <span class="tag">DueDate:</span>
-                <span class="content">${task.dueDateFormatted2}</span>
+                <span class="content">${task.dueDateFormattedEEEE}</span>
             </p>
             <p class="recurringCycle">
                 <span class="tag">RecurringCycle: </span>
@@ -106,7 +106,8 @@ class TaskListNodeManager {
         }
 
         if (task.checkStatus == 'checked') {
-            dueDateNode.style.background = 'lightGreen';
+            dueDateNode.style.background = '';
+            taskNode.style.background = 'linear-gradient(to top, var(--color-liner-background) 3px, lightGreen 3px)';
         }
 
         return taskNode;
@@ -242,7 +243,6 @@ class TaskListNodeManager {
         buttonContainer.classList.remove('hidden');
 
         submit.addEventListener('click', () => {
-
             contents.forEach(content => content.setAttribute('contentEditable', false));
 
             tasksArr[index].title = titleBeingEdited.textContent;

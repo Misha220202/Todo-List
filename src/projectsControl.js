@@ -82,7 +82,7 @@ class ProjectsNodeManager {
             </p>
             <p class="dueDate">
                 <span class="tag">DueDate:</span>
-                <span class="content">${projectTask.dueDateFormatted2}</span>
+                <span class="content">${projectTask.dueDateFormattedEEEE}</span>
             </p>
             <p class="recurringCycle">
                 <span class="tag">RecurringCycle: </span>
@@ -112,7 +112,8 @@ class ProjectsNodeManager {
         }
 
         if (projectTask.checkStatus == 'checked') {
-            dueDateNode.style.background = 'lightGreen';
+            dueDateNode.style.background = '';
+            projectTaskNode.style.background = 'linear-gradient(to top, var(--color-liner-background) 3px, lightGreen 3px)';
         }
 
         return projectTaskNode;
@@ -341,7 +342,7 @@ class ProjectsNodeManager {
         const projectTasksArr = this.project.projectTasksArr;
         if (projectTasksArr[index].dueDate < currentDate()) {
             projectTasksArr[index].checkStatus = 'notChecked';
-            projectTasksArr[index].dueDateFormatted = currentDate();
+            projectTasksArr[index].dueDateFormatted = currentDateFormatted();
         }
         this.update();
     }

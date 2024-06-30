@@ -16,7 +16,7 @@ export class Task {
         return new Date(this.dueDateFormatted + 'T00:00:00');
     }
 
-    get dueDateFormatted2() {
+    get dueDateFormattedEEEE() {
         return format(this.dueDate, 'yyyy-MM-dd EEEE');
     }
 
