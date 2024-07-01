@@ -41,7 +41,8 @@ body {
 .sidebar {
     display: grid;
     grid-template-rows: repeat(4, auto) 1fr;
-    width: 20rem;
+    flex: 1;
+    max-width: 25rem;
     padding: 0 0.5rem;
     gap: 1rem;
     background-color: var(--color-sidebar-background);
@@ -149,7 +150,7 @@ body {
 }
 
 .container {
-    flex: 1;
+    flex: 3.5;
     display: grid;
     grid-template-rows: auto 1fr;
     padding: 0.3rem;
@@ -494,4 +495,91 @@ body.darkMode .contentContainer>div>.task:last-child {
 
 body.darkMode .contentEditable span.content {
     background-color: var(--dark-color-task-gradient);
+}
+
+/* For screens smaller than 768px (e.g., phones) */
+@media only screen and (max-width: 768px) {
+    body {
+        flex-direction: column;
+        font-size: 0.8rem;
+    }
+
+    .sidebar {
+        grid-template-columns: repeat(4, auto) 1fr;
+    }
+
+    .sidebar {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .container {
+        padding: 0;
+    }
+
+    nav {
+        flex-direction: column;
+        padding: 0.5rem;
+    }
+
+    .contentContainer>div {
+        padding: 0.5rem;
+    }
+
+    .task {
+        min-width: 100%;
+        padding: 0.2rem 0;
+    }
+}
+
+/* For screens between 768px and 1024px (e.g., tablets) */
+@media only screen and (min-width: 769px) and (max-width: 1024px) {
+    .sidebar {
+        max-width: 20rem;
+        padding: 0 0.3rem;
+    }
+
+    .container {
+        padding: 0.2rem;
+    }
+
+    nav {
+        padding: 0.3rem;
+    }
+
+    .contentContainer>div {
+        padding: 0.5rem 3rem;
+    }
+
+    .task {
+        min-width: 25rem;
+    }
+}
+
+/* For screens larger than 1920px (e.g., high-resolution desktops) */
+@media only screen and (min-width: 1921px) {
+    body {
+        font-size: 1.2rem;
+    }
+
+    .sidebar {
+        max-width: 30rem;
+        padding: 0 1rem;
+    }
+
+    .container {
+        padding: 0.5rem;
+    }
+
+    nav {
+        padding: 0 1rem;
+    }
+
+    .contentContainer>div {
+        padding: 2rem 10rem;
+    }
+
+    .task {
+        min-width: 35rem;
+    }
 }
