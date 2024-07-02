@@ -15,7 +15,6 @@ module.exports = {
 
   // 输出文件配置
   output: {
-    //filename: '[name].bundle.js',
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
     assetModuleFilename: 'assets/[ext]/[name][hash][ext][query]',

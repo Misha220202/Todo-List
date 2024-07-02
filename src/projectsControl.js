@@ -220,7 +220,7 @@ class ProjectsNodeManager {
                     <div class="imageContainer">
                         <img src="${addUrl}" alt="addTask">
                     </div>
-                    <p>Add task</p>
+                    <p>Add task to your project</p>
                 </div>
             </div>`;
 
