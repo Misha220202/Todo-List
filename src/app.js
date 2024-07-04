@@ -3,7 +3,7 @@ import { startClock } from './time.js';
 import { settingsControl, setUser } from './settingsControl.js';
 import { tasksControl } from './tasksControl.js';
 import { projectsControl } from './projectsControl.js';
-import './login.css'
+
 import { PublicClientApplication, LogLevel, EventType, InteractionRequiredAuthError } from '@azure/msal-browser';
 
 /**

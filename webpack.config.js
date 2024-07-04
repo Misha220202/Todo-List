@@ -9,7 +9,7 @@ module.exports = {
   entry: {
     index: './src/index.js',
     // login: './src/login.js',
-    signup: './src/signup.js',
+    // signup: './src/signup.js',
     app: './src/app.js'
   },
 
@@ -76,11 +76,11 @@ module.exports = {
     //   filename: 'login.html',
     //   chunks: ['login']
     // }),
-    new HtmlWebpackPlugin({
-      template: './src/signup.html',
-      filename: 'signup.html',
-      chunks: ['signup']
-    }),
+    // new HtmlWebpackPlugin({
+    //   template: './src/signup.html',
+    //   filename: 'signup.html',
+    //   chunks: ['signup']
+    // }),
     new HtmlWebpackPlugin({
       template: './src/app.html',
       filename: 'app.html',
