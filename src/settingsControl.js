@@ -1,29 +1,34 @@
 import { User } from './basicClass.js';
 
-const userJson = localStorage.getItem('user');
-const userObj = JSON.parse(userJson);
-let user = userObj
-  ? new User(
-      userObj.username,
-      userObj.profileUrl,
-      userObj.tasksArr,
-      userObj.projectsArr
-    )
-  : null;
+// Below two lines are for localStorage version
+const signedInUserName = sessionStorage.getItem('signedInUserName');
+// const userObj = JSON.parse(userJson);
+// let user = userObj
+//   ? new User(
+//       userObj.username,
+//       userObj.profileUrl,
+//       userObj.tasksArr,
+//       userObj.projectsArr
+//     )
+//   : null;
+
 const userNode = document.querySelector('.user');
 
 const setUser = () => {
-  if (!userJson) {
-    const profileUrl = require('./assets/images/user.svg');
-    user = new User('Username', profileUrl);
-  }
+  // if (!userJson) {
+  //   const profileUrl = require('./assets/images/user.svg');
+  //   user = new User('Username', profileUrl);
+  // }
   const usernameNode = userNode.querySelector('p.username');
   const userProfileNode = userNode.querySelector(
     'div.userProfileContainer>img'
   );
+  console.log(`signedInUserName: ${signedInUserName}`);
+  const profileUrl = require('./assets/images/user.svg');
+  const user = new User(signedInUserName, profileUrl);
   usernameNode.textContent = user.username;
   userProfileNode.src = user.profileUrl;
-  localStorage.setItem('user', JSON.stringify(user));
+  // localStorage.setItem('user', JSON.stringify(user));
 };
 
 const handleFileRead = (file) => {

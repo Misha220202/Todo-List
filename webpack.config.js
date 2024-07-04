@@ -92,7 +92,7 @@ module.exports = {
     static: path.resolve(__dirname, 'dist'),
     hot: true,
     compress: true,
-    port: 9000,
+    port: 6420,
     watchFiles: ['src/**/*.php', 'src/**/*.html', 'public/**/*'],
   },
 
