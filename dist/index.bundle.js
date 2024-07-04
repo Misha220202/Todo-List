@@ -126,7 +126,7 @@ eval("\n\n/* istanbul ignore next  */\nfunction styleTagTransform(css, styleElem
   \**********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _index_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./index.css */ \"./src/index.css\");\n\r\n\r\nconst local = document.querySelector('#local');\r\nconst cloud = document.querySelector('#cloud');\r\n\r\nif (local) {\r\n  local.addEventListener('click', () => (window.location.href = './app.html'));\r\n}\r\n\r\nif (cloud) {\r\n  cloud.addEventListener(\r\n    'click',\r\n    () => (window.location.href = './login.html')\r\n  );\r\n}\r\n\n\n//# sourceURL=webpack://todo-list/./src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _index_css__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./index.css */ \"./src/index.css\");\n\r\n\r\nwindow.location.href = './app.html';\r\n\r\n// const local = document.querySelector('#local');\r\n// const cloud = document.querySelector('#cloud');\r\n\r\n\r\n// if (local) {\r\n//   local.addEventListener('click', () => (window.location.href = './app.html'));\r\n// }\r\n\r\n// if (cloud) {\r\n//   cloud.addEventListener(\r\n//     'click',\r\n//     () => (window.location.href = './login.html')\r\n//   );\r\n// }\r\n\n\n//# sourceURL=webpack://todo-list/./src/index.js?");
 
 /***/ })
 

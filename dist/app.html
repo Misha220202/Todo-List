@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>App</title>
+
+    <!-- adding Bootstrap 5 for UI components  -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
 <script defer src="app.bundle.js"></script></head>
 
 <body>
@@ -92,6 +96,10 @@
     <div class="container">
         <nav>
             <p class="clock"></p>
+            <button type="button" id="editProfileButton" class="btn btn-secondary d-none profileButton">Edit
+                Profile</button>
+            <button type="button" id="signIn" class="btn btn-secondary">Sign-in</button>
+            <button type="button" id="signOut" class="btn btn-success d-none">Sign-out</button>
             <div>
                 <div class="user">
                     <div class="userProfileContainer">
@@ -101,9 +109,8 @@
                 </div>
                 <div class="settings">
                     <div id="darkMode">Dark Mode</div>
-                    <div id="setProfile">Set Profile</div>
-                    <a id="logOut" href="./index.html">Log Out</a>
                     <div id="reset">Reset</div>
+        
                 </div>
             </div>
         </nav>

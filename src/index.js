@@ -1,15 +1,18 @@
 import './index.css';
 
-const local = document.querySelector('#local');
-const cloud = document.querySelector('#cloud');
+window.location.href = './app.html';
 
-if (local) {
-  local.addEventListener('click', () => (window.location.href = './app.html'));
-}
+// const local = document.querySelector('#local');
+// const cloud = document.querySelector('#cloud');
 
-if (cloud) {
-  cloud.addEventListener(
-    'click',
-    () => (window.location.href = './login.html')
-  );
-}
+
+// if (local) {
+//   local.addEventListener('click', () => (window.location.href = './app.html'));
+// }
+
+// if (cloud) {
+//   cloud.addEventListener(
+//     'click',
+//     () => (window.location.href = './login.html')
+//   );
+// }

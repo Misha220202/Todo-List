@@ -8,7 +8,7 @@ module.exports = {
   // 入口文件配置
   entry: {
     index: './src/index.js',
-    login: './src/login.js',
+    // login: './src/login.js',
     signup: './src/signup.js',
     app: './src/app.js'
   },
@@ -71,11 +71,11 @@ module.exports = {
       filename: 'index.html',
       chunks: ['index']
     }),
-    new HtmlWebpackPlugin({
-      template: './src/login.html',
-      filename: 'login.html',
-      chunks: ['login']
-    }),
+    // new HtmlWebpackPlugin({
+    //   template: './src/login.html',
+    //   filename: 'login.html',
+    //   chunks: ['login']
+    // }),
     new HtmlWebpackPlugin({
       template: './src/signup.html',
       filename: 'signup.html',
