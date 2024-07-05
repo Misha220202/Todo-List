@@ -1,15 +1,18 @@
 import { Client, KustoConnectionStringBuilder } from 'azure-kusto-data';
 
-const aadAppId = 'a696b3cb-76a0-4c6a-ae25-94ddc914a236';
-const appKey = '20j8Q~gNO8Nkb.PFqGTyV0_e6qdaEkFNcD5Poas2';
+// Below is service principal info to accessing Kusto in nodeJs environment, not used in browser.
+// const aadAppId = 'a696b3cb-76a0-4c6a-ae25-94ddc914a236';
+// const appKey = 'You appKey';
+// const tenantId = '060078fb-98e5-462b-a705-2d77a2392b21';
 const database = 'TodoList';
 const clusterUrl = 'https://fangshengtodolist.canadacentral.kusto.windows.net/';
-const tenantId = '060078fb-98e5-462b-a705-2d77a2392b21';
 
 export class KustoHelper {
-    constructor() {
+    constructor(accessToken) {
         this.database = database;
-        const kcsb = KustoConnectionStringBuilder.withAadApplicationKeyAuthentication(clusterUrl, aadAppId, appKey, tenantId)
+        // const kcsb = KustoConnectionStringBuilder.withUserPrompt(clusterUrl, {clientId: aadAppId, redirectUri: 'http://localhost:6420'});
+        
+        const kcsb = KustoConnectionStringBuilder.withAccessToken(clusterUrl, accessToken);
         this.client = new Client(kcsb);
         console.log('KustoHelper created!');
     }
@@ -96,8 +99,9 @@ export class KustoHelper {
     }
 }
 
+// Sample snippet to test the KustoHelper class
 // let kustoHelper = new KustoHelper();
 // kustoHelper.executeQuery('print 1123').then((resultTable) => {console.log(resultTable._rows[0]);}).catch((error) => console.log(error));
-// kustoHelper.addUser('fangsheng', 'SF666').then(() => console.log('User added!')).catch((error) => console.log(error));
+// kustoHelper.addUser('user1', 'user1_url').then(() => console.log('User added!')).catch((error) => console.log(error));
 // kustoHelper.checkUserExist('fangsheng').then((exist) => console.log(exist)).catch((error) => console.log(error));
-// kustoHelper.addTask('fangsheng', 'pick up son', 'go to dayhome to pickup son', '2024-07-24', 'unchecked', 'important').then(() => console.log('Task added!')).catch((error) => console.log(error));
+// kustoHelper.addTask('user2', 'See dentist', 'dental appointment to remove wisdom tooth', '2024-07-24', 'unchecked', 'important').then(() => console.log('Task added!')).catch((error) => console.log(error));

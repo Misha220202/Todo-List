@@ -130,9 +130,16 @@ const signInButton = document.getElementById('signIn');
 const signOutButton = document.getElementById('signOut');
 const editProfileButton = document.getElementById('editProfileButton');
 
-function welcomeUser(username) {
+function welcomeUser(username, accessToken) {
     console.log(`Welcome ${username}!`);
     sessionStorage.setItem('signedInUserName', username);
+    if (accessToken) {
+        sessionStorage.setItem('accessToken', accessToken);
+    } else {
+        console.log('No valid access token');
+    };
+
+    console.log(`Access token: ${accessToken}`);
     setUser();
     signInButton.classList.add('d-none');
     signOutButton.classList.remove('d-none');
@@ -229,7 +236,8 @@ function selectAccount() {
         accountId = originalSignInAccount.homeAccountId;
 
         signedInUserName = originalSignInAccount.username ? originalSignInAccount.username : originalSignInAccount.name;
-        welcomeUser(signedInUserName);
+        console.log('Getting account from originalSignInAccount more than 1: ', originalSignInAccount);
+        welcomeUser(signedInUserName, originalSignInAccount.idToken);
         myMSALObj
             .acquireTokenSilent({
                 account: myMSALObj.getAccountByHomeId(accountId),
@@ -242,7 +250,8 @@ function selectAccount() {
     } else if (currentAccounts.length === 1) {
         accountId = currentAccounts[0].homeAccountId;
         signedInUserName = currentAccounts[0].username;
-        welcomeUser(signedInUserName);
+        console.log('Getting account from originalSignInAccount = 1: ', currentAccounts[0]);
+        welcomeUser(signedInUserName, currentAccounts[0].idToken);
 
         /**
          * In order to obtain the ID Token in the cached obtained previously, you can initiate a
@@ -269,10 +278,10 @@ function handleResponse(response) {
      */
 
     if (response !== null) {
-        accountId = response.account.homeAccountId;
-        signedInUserName = response.account.username;
+        const accountId = response.account.homeAccountId;
+        const signedInUserName = response.account.username;
         console.log(accountId, signedInUserName);
-        welcomeUser(signedInUserName);
+        welcomeUser(signedInUserName, response.accessToken);
         console.log(response.idTokenClaims);
     } else {
         selectAccount();

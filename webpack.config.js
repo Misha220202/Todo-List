@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require("webpack");
 
 module.exports = {
   // 模式配置
@@ -60,10 +61,28 @@ module.exports = {
           filename: 'assets/xml/[name][hash][ext]'
         }
       },
+      {
+        test: /\.m?js/,
+        resolve: {
+            fullySpecified: false
+        }
+    },
     ],
   },
 
-  // 插件配置
+  // resolve: {
+  //   "fallback": {
+  //     "fs": false,
+  //     "os": false,
+  //     "process": false,
+  //     "stream-http": false,
+  //     "https": false,
+  //     "http": false,
+  //     "crypto": false,
+  //     "stream": false
+  //   }
+  // },
+
   plugins: [
     new HtmlWebpackPlugin({
       // title: 'name',
@@ -71,21 +90,19 @@ module.exports = {
       filename: 'index.html',
       chunks: ['index']
     }),
-    // new HtmlWebpackPlugin({
-    //   template: './src/login.html',
-    //   filename: 'login.html',
-    //   chunks: ['login']
-    // }),
-    // new HtmlWebpackPlugin({
-    //   template: './src/signup.html',
-    //   filename: 'signup.html',
-    //   chunks: ['signup']
-    // }),
     new HtmlWebpackPlugin({
       template: './src/app.html',
       filename: 'app.html',
       chunks: ['app']
-    })
+    }),
+    new webpack.ProvidePlugin({
+      process: "process/browser",
+    }),
+    // Work around for Buffer is undefined:
+    // https://github.com/webpack/changelog-v5/issues/10
+    new webpack.ProvidePlugin({
+      Buffer: ["buffer", "Buffer"],
+    }),
   ],
 
   devServer: {

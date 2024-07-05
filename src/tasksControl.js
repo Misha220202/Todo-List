@@ -9,12 +9,14 @@ import {
   classFindParentContainer,
   idFindParentContainer,
 } from './findParentContainer.js';
+// import { KustoHelper } from './kustoDataBase.js';
 
-import { KustoHelper } from './kustoDataBase.js';
+// Create KustoHelper instance to interact with the Kusto database. Uncomment these for production use.
+// const accessToken = sessionStorage.getItem('accessToken');
+// const kustoHelper = new KustoHelper(accessToken);
+// const signedInUserName = sessionStorage.getItem('signedInUserName');
 
-const kustoHelper = new KustoHelper();
-
-const tasksArrJson = sessionStorage.getItem('tasksArr');
+const tasksArrJson = localStorage.getItem('tasksArr');
 const tasksArr = tasksArrJson
   ? JSON.parse(tasksArrJson).map(
       (taskObj) =>
@@ -288,6 +290,10 @@ class TaskListNodeManager {
   add(task) {
     tasksArr.push(task);
     this.update();
+    
+    // Add the task in the Kusto database. Uncomment these for production use.
+    // console.log('calling kusto api to add task:');
+    // kustoHelper.addTask(signedInUserName, task.title, task.description, task.dueDateFormatted, task.checkStatus, task.importance);
   }
 
   edit(taskNode, index) {
@@ -343,6 +349,10 @@ class TaskListNodeManager {
       buttonContainer.classList.add('hidden');
 
       this.update();
+
+      // Update the task in the Kusto database. Uncomment these for production use.
+      // const task = tasksArr[index];
+      // kustoHelper.addTask(signedInUserName, task.title, task.description, task.dueDateFormatted, task.checkStatus, task.importance);
     });
 
     cancel.addEventListener('click', () => {
