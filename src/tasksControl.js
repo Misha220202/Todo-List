@@ -10,7 +10,11 @@ import {
   idFindParentContainer,
 } from './findParentContainer.js';
 
-const tasksArrJson = localStorage.getItem('tasksArr');
+import { KustoHelper } from './kustoDataBase.js';
+
+const kustoHelper = new KustoHelper();
+
+const tasksArrJson = sessionStorage.getItem('tasksArr');
 const tasksArr = tasksArrJson
   ? JSON.parse(tasksArrJson).map(
       (taskObj) =>
