@@ -388,6 +388,10 @@ signInButton.addEventListener('click',signIn);
 signOutButton.addEventListener('click',signOut);
 editProfileButton.addEventListener('click',editProfile);
 
+// Ensure user is authenticated on page load
+window.onload = () => {
+    selectAccount();
+};
 
 startClock();
 
