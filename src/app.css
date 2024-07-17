@@ -71,6 +71,7 @@ body {
 .imageContainer>img {
     height: 100%;
     object-fit: contain;
+    margin-bottom: 1rem;
 }
 
 .addTask>.imageContainer>img,
