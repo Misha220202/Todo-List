@@ -29,6 +29,10 @@
     --dark-color-task-gradient: rgb(60, 60, 60);
 }
 
+p {
+    margin-bottom: 0;
+}
+
 body {
     position: relative;
     display: flex;
@@ -95,12 +99,6 @@ body {
     gap: 1.2rem;
     border-radius: 0.5rem;
     font-size: 1.2rem;
-}
-
-.tasks>*>p,
-.projects>* p,
-.templates>*>p {
-    margin-bottom: 0;
 }
 
 .projects>.sidebarTitle>.iconButtonContainer:hover {
@@ -393,15 +391,15 @@ form {
 }
 
 .addTaskDialog>form {
-    height: 20rem;
+    height: 21rem;
 }
 
 .addProjectTaskDialog>form {
-    height: 23rem;
+    height: 24rem;
 }
 
 .setProfileDialog>form {
-    height: 15rem;
+    height: 16rem;
 }
 
 fieldset {
