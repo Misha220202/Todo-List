@@ -71,7 +71,6 @@ body {
 .imageContainer>img {
     height: 100%;
     object-fit: contain;
-    margin-bottom: 1rem;
 }
 
 .addTask>.imageContainer>img,
@@ -96,6 +95,12 @@ body {
     gap: 1.2rem;
     border-radius: 0.5rem;
     font-size: 1.2rem;
+}
+
+.tasks>*>p,
+.projects>* p,
+.templates>*>p {
+    margin-bottom: 0;
 }
 
 .projects>.sidebarTitle>.iconButtonContainer:hover {
