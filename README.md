@@ -33,31 +33,20 @@
   - Allows users to create, edit, and delete projects.
   - Facilitates the organization of tasks under different projects.
 
-### 4. removeChosenFromClasslist.js
-- **Purpose**: Handles the removal of classes from selected elements.
-- **Functionality**: 
-  - Provides utility functions to modify the CSS class list of DOM elements, improving UI interactions.
-
-### 5. findParentContainer.js
-- **Purpose**: Helps locate the parent container of a specific DOM element.
-- **Functionality**: 
-  - Provides utility functions to traverse the DOM, allowing for easier manipulation of elements based on user interactions.
-
-### 6. settingsControl.js
+### 4. settingsControl.js
 - **Purpose**: Manages application settings.
 - **Functionality**: 
   - Allows users to customize settings such as themes or preferences.
   - Provides a user interface for modifying settings and saving them.
 
-### 7. tasksControl.js
+### 5. tasksControl.js
 - **Purpose**: Handles task-related functionalities.
 - **Functionality**: 
   - Implements functions to add, edit, delete, and mark tasks as complete/incomplete.
   - Manages task categorization and filtering (by date, importance, etc.).
 
-### 8. time.js
+### 6. time.js
 - **Purpose**: Manages time-related functionalities.
 - **Functionality**: 
   - Implements the `startClock` function to display the current time.
   - Provides date manipulation utilities, possibly using date-fns for enhanced date handling.
-
