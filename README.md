@@ -1,7 +1,7 @@
 # Todo-List
 
 # Overview
-# This is a simple and efficient Todo List App that helps users manage their daily tasks. Users can create, edit, delete, and mark tasks as completed. The app is designed to keep track of what needs to be done in a user-friendly manner, ensuring productivity and organization.
+*This is a simple and efficient Todo List App that helps users manage their daily tasks. Users can create, edit, delete, and mark tasks as completed. The app is designed to keep track of what needs to be done in a user-friendly manner, ensuring productivity and organization.
 
 # Features
 # Add Tasks: Easily add new tasks with a title and optional description.
